@@ -21,6 +21,7 @@ export default function Navbar() {
           <Link
             to={'login'}
             className='flex justify-center items-center px-4 py-2 h-14 w-24  text-white lg:w-26 lg:text-primary-black lg:hover:rounded-lg lg:hover:border lg:hover:border-primary-black'
+            onClick={handleToggle}
           >
             Sign In
           </Link>
@@ -29,6 +30,7 @@ export default function Navbar() {
           <Link
             to={'join'}
             className='flex justify-center items-center px-4 py-2 h-14 w-24 text-white lg:w-26 lg:text-primary-black lg:hover:rounded-lg lg:hover:border lg:hover:border-primary-black'
+            onClick={handleToggle}
           >
             Sign Up
           </Link>

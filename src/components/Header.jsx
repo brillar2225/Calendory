@@ -5,7 +5,7 @@ import calendory from '../assets/logos/Calendory.png';
 
 export default function Header() {
   return (
-    <header className='px-1 md:px-2 lg:px-3'>
+    <header className='px-1 md:px-2 lg:px-3 shadow-sm'>
       <div className='relative flex h-15 items-center justify-between md:h-16 lg:h-17'>
         <Link to={'/'}>
           <img
