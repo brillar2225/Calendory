@@ -23,9 +23,6 @@ export const theme = {
         95: '#f2f2f2',
       },
     },
-    // fontFamily: {
-    //   zen: ['Zen Maru Gothic', 'sans-serif'],
-    // },
   },
 };
 export const plugins = [];
