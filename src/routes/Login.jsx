@@ -12,7 +12,8 @@ const initialValue = {
 
 export default function Login() {
   const [values, setValues] = useState(initialValue);
-  const { isLoading, error, login } = useSignIn();
+  const { isLoading, error, login, googleLogin, twitterLogin, githubLogin } =
+    useSignIn();
 
   const handleChange = (e) => {
     setValues((value) => ({
@@ -73,7 +74,10 @@ export default function Login() {
                 <span className='h-px w-5/12 bg-black'></span>
               </div>
               <div className='flex flex-col items-center w-full space-y-2'>
-                <button className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'>
+                <button
+                  className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'
+                  onClick={googleLogin}
+                >
                   <div>
                     Sign In with <span className='text-google-blue'>G</span>
                     <span className='text-google-red'>o</span>
@@ -84,13 +88,19 @@ export default function Login() {
                   </div>
                   <img src={google} alt='Google' className='h-6 w-6' />
                 </button>
-                <button className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'>
+                <button
+                  className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'
+                  onClick={twitterLogin}
+                >
                   <div>
                     Sign In with <span className='text-twitter'>Twitter</span>
                   </div>
                   <img src={twitter} alt='Twitter' className='h-6 w-6' />
                 </button>
-                <button className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'>
+                <button
+                  className='h-11 w-9/10 flex items-center justify-center space-x-2 rounded-lg border-none bg-gray-95'
+                  onClick={githubLogin}
+                >
                   <div>Sign In with Github</div>
                   <img src={github} alt='Github' className='h-6 w-6' />
                 </button>
