@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root';
 import NotFound from './routes/NotFound';
-import Welcome from './routes/Welcome';
+import Home from './routes/Home';
 import Join from './routes/Join';
 import Login from './routes/Login';
-import Home from './routes/Home';
+import Mypage from './routes/Mypage';
 import TodoList from './routes/TodoList';
 
 const router = createBrowserRouter([
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Welcome />,
+        element: <Home />,
       },
       {
         path: 'join',
@@ -27,13 +27,11 @@ const router = createBrowserRouter([
       },
       {
         path: ':uid',
-        element: <Home />,
-        children: [
-          {
-            path: '/:uid/todos',
-            element: <TodoList />,
-          },
-        ],
+        element: <Mypage />,
+      },
+      {
+        path: ':uid/todos',
+        element: <TodoList />,
       },
     ],
   },

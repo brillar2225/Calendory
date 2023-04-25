@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export default function Home() {
@@ -8,9 +8,14 @@ export default function Home() {
   } = useAuthContext();
 
   return (
-    <>
-      {user && <div>{user.displayName}</div>}
-      <Outlet />
-    </>
+    <section className='h-9/10 w-full'>
+      <h1 className='sr-only'>Welcome to Calendory!</h1>
+      <div>
+        <h1>Welcome to Calendory</h1>
+        <Link to={user ? `${user.uid}` : '/login'}>
+          {user ? 'Start' : 'Sign In'}
+        </Link>
+      </div>
+    </section>
   );
 }

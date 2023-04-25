@@ -13,11 +13,11 @@ export default function Navbar({ user }) {
   };
 
   return (
-    <nav>
+    <nav className='inline-flex items-center'>
       {user ? (
         <ul
           className={`${
-            toggle ? 'hidden' : 'fixed right-1 top-11 bg-secondary-blue'
+            toggle ? 'hidden' : 'fixed right-1 top-14 bg-secondary-blue'
           } lg:flex lg:static lg:flex-row lg:space-x-2 lg:bg-transparent rounded-lg`}
         >
           <li>
@@ -27,6 +27,15 @@ export default function Navbar({ user }) {
               onClick={logout}
             >
               Sign Out
+            </Link>
+          </li>
+          <li className='hidden lg:flex lg:items-center lg:justify-center'>
+            <Link to={`${user.uid}`}>
+              <img
+                src={user.photoUrl ? user.photoUrl : user.photoURL}
+                alt={user.displayName}
+                className='rounded-full h-12 w-12'
+              />
             </Link>
           </li>
         </ul>
@@ -56,19 +65,26 @@ export default function Navbar({ user }) {
           </li>
         </ul>
       )}
-      <div className='m-2 cursor-pointer lg:hidden' onClick={handleToggle}>
+      {user && (
+        <Link to={`/${user.uid}`} className='mr-2 lg:hidden'>
+          <img
+            src={user.photoUrl ? user.photoUrl : user.photoURL}
+            alt={user.displayName}
+            className='h-11 w-11 rounded-full '
+          />
+        </Link>
+      )}
+      <div className='cursor-pointer lg:hidden' onClick={handleToggle}>
         {toggle ? (
           <FontAwesomeIcon
             icon={faBars}
-            size='xl'
-            className='text-primary-black'
+            className='h-6 w-6 p-2 text-primary-black'
           />
         ) : (
           <FontAwesomeIcon
             icon={faXmark}
             bounce
-            size='xl'
-            className='text-primary-black'
+            className='h-6 w-6 p-2 text-primary-black'
           />
         )}
       </div>

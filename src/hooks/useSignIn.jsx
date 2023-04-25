@@ -64,7 +64,7 @@ export default function useSignIn() {
         });
         dispatch({ type: 'SET_USER', payload: userCredential.user });
         setIsLoading(false);
-        navigate(`/${userCredential.user.uid}`);
+        navigate('/');
       } catch (e) {
         setError(e.message);
         setIsLoading(false);
@@ -101,7 +101,7 @@ export default function useSignIn() {
         });
         dispatch({ type: 'SET_USER', payload: userCredential.user });
         setIsLoading(false);
-        navigate(`/${userCredential.user.uid}`);
+        navigate('/');
       } catch (e) {
         setError(e.message);
         setIsLoading(false);
@@ -127,7 +127,7 @@ export default function useSignIn() {
         if (docSnap.exists()) {
           dispatch({ type: 'SET_USER', payload: docSnap.data() });
           setIsLoading(false);
-          return navigate(`/${userCredential.user.uid}`);
+          return navigate('/');
         }
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           createdAt: Timestamp.fromDate(new Date()),

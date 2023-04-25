@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from 'firebase/auth';
 import { Timestamp, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../api/firebase';
 import { useAuthContext } from '../contexts/AuthContext';
+import { createAvatar } from '@dicebear/core';
+import { identicon } from '@dicebear/collection';
 
 export default function useSignUp() {
   const { dispatch } = useAuthContext();
@@ -32,7 +38,17 @@ export default function useSignUp() {
         email,
         password
       );
-      await updateProfile(auth.currentUser, { displayName });
+      const avatar = createAvatar(identicon, {
+        seed: ['Felix', 'Aneka'][Math.floor(Math.random() * 2)],
+        rotate: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+        size: 80,
+        row4: ['ooxoo', 'oxoxo', 'oxxxo', 'xooox', 'xoxox', 'xxoxx', 'xxxxx'],
+      }).toDataUriSync();
+      await updateProfile(auth.currentUser, {
+        displayName,
+        photoURL: avatar,
+      });
+      await sendEmailVerification(auth.currentUser);
       try {
         setError(null);
         await setDoc(doc(db, 'users', userCredential.user.uid), {
@@ -40,10 +56,11 @@ export default function useSignUp() {
           uid: userCredential.user.uid,
           displayName: userCredential.user.displayName,
           email: userCredential.user.email,
+          photoUrl: avatar,
         });
         dispatch({ type: 'SET_USER', payload: userCredential.user });
         setIsLoading(false);
-        navigate(`/${userCredential.user.uid}`);
+        navigate('/');
       } catch (e) {
         setError(e.message);
       }
