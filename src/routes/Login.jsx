@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useUser from '../hooks/useUser';
 import google from '../assets/icons/google.png';
 import twitter from '../assets/icons/twitter.png';
 import github from '../assets/icons/github.png';
-import useSignIn from '../hooks/useSignIn';
 
 const initialValue = {
   email: '',
@@ -13,7 +13,7 @@ const initialValue = {
 export default function Login() {
   const [values, setValues] = useState(initialValue);
   const { isLoading, error, login, googleLogin, twitterLogin, githubLogin } =
-    useSignIn();
+    useUser();
 
   const handleChange = (e) => {
     setValues((value) => ({
@@ -67,6 +67,7 @@ export default function Login() {
                 >
                   Sign In
                 </button>
+                <Link to={'/reset-password'}>Forgot Password?</Link>
               </form>
               <div className='inline-flex w-full items-center justify-center py-3'>
                 <span className='h-px w-5/12 bg-black'></span>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useSignOut from '../hooks/useSignOut';
+import useUser from '../hooks/useUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar({ user }) {
-  const { logout } = useSignOut();
+  const { logout } = useUser();
   const [toggle, setToggle] = useState(true);
 
   const handleToggle = () => {

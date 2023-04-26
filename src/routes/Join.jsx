@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useSignUp from '../hooks/useSignUp';
+import useUser from '../hooks/useUser';
 
 const initialValue = {
   displayName: '',
@@ -11,7 +11,7 @@ const initialValue = {
 
 export default function Join() {
   const [values, setValues] = useState(initialValue);
-  const { isLoading, error, register } = useSignUp();
+  const { isLoading, error, register } = useUser();
 
   const handleChange = (e) => {
     setValues((value) => ({

@@ -1,6 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { useAuthContext } from '../contexts/AuthContext';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+} from 'firebase/auth';
+import {
+  Timestamp,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import {
   auth,
   db,
@@ -8,21 +27,80 @@ import {
   googleProvider,
   twitterProvider,
 } from '../api/firebase';
-import { useAuthContext } from '../contexts/AuthContext';
-import { Timestamp, doc, getDoc, setDoc } from 'firebase/firestore';
+import { createAvatar } from '@dicebear/core';
+import { identicon } from '@dicebear/collection';
 
-export default function useSignIn() {
+export default function useUser() {
   const { dispatch } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
+  // メールアドレスとパスワードでの会員登録
+  const register = async (values) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const { displayName, email, password, confirmPassword } = values;
+      if (password === '' || confirmPassword === '') {
+        setError('パスワードを入力して下さい');
+        setIsLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('パスワードが一致しておりません');
+        setIsLoading(false);
+        return;
+      }
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const avatar = createAvatar(identicon, {
+        seed: ['Felix', 'Aneka'][Math.floor(Math.random() * 2)],
+        rotate: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+        size: 80,
+        row4: ['ooxoo', 'oxoxo', 'oxxxo', 'xooox', 'xoxox', 'xxoxx', 'xxxxx'],
+      }).toDataUriSync();
+      await updateProfile(auth.currentUser, {
+        displayName,
+        photoURL: avatar,
+      });
+      await sendEmailVerification(auth.currentUser);
+      try {
+        setError(null);
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          createdAt: Timestamp.fromDate(new Date()),
+          uid: userCredential.user.uid,
+          displayName: userCredential.user.displayName,
+          email: userCredential.user.email,
+          photoUrl: avatar,
+        });
+        dispatch({ type: 'SET_USER', payload: userCredential.user });
+        setIsLoading(false);
+        navigate('/');
+      } catch (e) {
+        setError(e.message);
+      }
+    } catch (e) {
+      setError(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  // メールアドレスとパスワードでのログイン
   const login = async (values) => {
     try {
       setError(null);
       setIsLoading(true);
       const { email, password } = values;
+      if (email === '' || password === '') {
+        setError('メールアドレスまたはパスワードを入力して下さい');
+        setIsLoading(false);
+        return;
+      }
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -37,6 +115,7 @@ export default function useSignIn() {
     }
   };
 
+  // Googleログイン
   const googleLogin = async () => {
     try {
       setError(null);
@@ -49,7 +128,6 @@ export default function useSignIn() {
       }
       try {
         const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
-        console.log(docSnap.data());
         if (docSnap.exists()) {
           dispatch({ type: 'SET_USER', payload: docSnap.data() });
           setIsLoading(false);
@@ -75,6 +153,7 @@ export default function useSignIn() {
     }
   };
 
+  // Twitterログイン
   const twitterLogin = async () => {
     try {
       setError(null);
@@ -112,6 +191,7 @@ export default function useSignIn() {
     }
   };
 
+  // Githubログイン
   const githubLogin = async () => {
     try {
       setError(null);
@@ -149,5 +229,62 @@ export default function useSignIn() {
     }
   };
 
-  return { isLoading, error, login, googleLogin, twitterLogin, githubLogin };
+  // ログアウト
+  const logout = async () => {
+    await signOut(auth);
+    dispatch({ type: 'REMOVE_USER', payload: null });
+  };
+
+  // パスワードをリセット
+  const resetPassword = async (values) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const { displayName, email } = values;
+      if (displayName === '' || email === '') {
+        setError('メールアドレスまたはパスワードを入力して下さい');
+        setIsLoading(false);
+        return navigate('/reset-password');
+      }
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, 'users'),
+          where('displayName', '==', displayName),
+          where('email', '==', email)
+        )
+      );
+      if (querySnapshot.empty !== false) {
+        setError('ユーザー名またはメールアドレスを正しく入力して下さい');
+        setIsLoading(false);
+        return navigate('/reset-password');
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        console.log('Succeeded in sending password reset email');
+      } catch {
+        setError('最初から再度やり直して下さい');
+        setIsLoading(false);
+        return navigate('/reset-password');
+      } finally {
+        setIsLoading(false);
+        return navigate('/login');
+      }
+    } catch (e) {
+      console.log(e.message);
+      setError(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    isLoading,
+    error,
+    register,
+    login,
+    googleLogin,
+    twitterLogin,
+    githubLogin,
+    logout,
+    resetPassword,
+  };
 }
