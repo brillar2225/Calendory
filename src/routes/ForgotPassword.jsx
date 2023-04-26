@@ -8,11 +8,19 @@ const initialValue = {
   confirmPassword: '',
 };
 
-function FirstStep({ step, displayName, onChange, onNext }) {
+function FirstStep({ step, error, displayName, onChange, onNext }) {
   return (
-    <div>
-      <label htmlFor='first'>STEP{step}: ユーザー名</label>
+    <div className='flex flex-col items-center justify-around h-5/6 w-11/12 relative'>
+      <label className='text-left w-9/10 text-xl font-bold' htmlFor='first'>
+        STEP {step}
+      </label>
+      {error && (
+        <h3 className='text-2xs md:text-xs text-rose-700 absolute top-2/7'>
+          {error}
+        </h3>
+      )}
       <input
+        className='w-9/10 h-11 rounded-lg border shadow-sm px-3 py-2'
         type='text'
         placeholder='Enter username'
         name='displayName'
@@ -21,16 +29,29 @@ function FirstStep({ step, displayName, onChange, onNext }) {
         onChange={onChange}
         required
       />
-      <button onClick={onNext}>Next</button>
+      <button
+        className='h-11 w-9/10 rounded-lg border-none bg-button-blue text-white'
+        onClick={onNext}
+      >
+        Next
+      </button>
     </div>
   );
 }
 
-function SecondStep({ step, email, onChange, onPrev, onSubmit }) {
+function SecondStep({ step, error, email, onChange, onPrev, onSubmit }) {
   return (
-    <div>
-      <label htmlFor='second'>STEP{step}: メールアドレス</label>
+    <div className='flex flex-col items-center justify-around h-5/6 w-11/12 relative'>
+      <label className='text-left w-9/10 text-xl font-bold' htmlFor='second'>
+        STEP {step}
+      </label>
+      {error && (
+        <h3 className='text-2xs md:text-xs text-rose-700 absolute top-2/7'>
+          {error}
+        </h3>
+      )}
       <input
+        className='w-9/10 h-11 rounded-lg border shadow-sm px-3 py-2'
         type='email'
         placeholder='Enter email'
         name='email'
@@ -39,8 +60,20 @@ function SecondStep({ step, email, onChange, onPrev, onSubmit }) {
         onChange={onChange}
         required
       />
-      <button onClick={onPrev}>Previous</button>
-      <button onClick={onSubmit}>Submit</button>
+      <div className='inline-flex justify-between w-9/10'>
+        <button
+          className='h-11 w-1/2 rounded-lg border border-button-blue text-button-blue mr-2'
+          onClick={onPrev}
+        >
+          Previous
+        </button>
+        <button
+          className='h-11 w-1/2 rounded-lg border-none bg-button-blue text-white'
+          onClick={onSubmit}
+        >
+          Submit
+        </button>
+      </div>
     </div>
   );
 }
@@ -75,28 +108,36 @@ export default function ForgotPassword() {
   };
 
   return (
-    <section>
+    <section className='h-9/10'>
       <h1 className='sr-only'>Find your password</h1>
-      <form onSubmit={handleSubmit}>
-        {error && <span>{error}</span>}
-        {step === 1 && (
-          <FirstStep
-            step={step}
-            displayName={displayName}
-            onChange={handleChange}
-            onNext={handleNext}
-          />
-        )}
-        {step === 2 && (
-          <SecondStep
-            step={step}
-            email={email}
-            onChange={handleChange}
-            onPrev={handlePrev}
+      <div className='h-full flex items-center justify-center'>
+        <div className='max-w-xs md:max-w-md w-full rounded-lg shadow-lg p-3 md:p-6 bg-white'>
+          <form
+            className='flex items-center h-80 justify-around'
             onSubmit={handleSubmit}
-          />
-        )}
-      </form>
+          >
+            {step === 1 && (
+              <FirstStep
+                step={step}
+                error={error}
+                displayName={displayName}
+                onChange={handleChange}
+                onNext={handleNext}
+              />
+            )}
+            {step === 2 && (
+              <SecondStep
+                step={step}
+                error={error}
+                email={email}
+                onChange={handleChange}
+                onPrev={handlePrev}
+                onSubmit={handleSubmit}
+              />
+            )}
+          </form>
+        </div>
+      </div>
     </section>
   );
 }

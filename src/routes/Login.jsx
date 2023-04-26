@@ -38,9 +38,9 @@ export default function Login() {
           <div className='h-full flex flex-col items-center justify-center bg-slate-50'>
             <div className='max-w-xs md:max-w-md w-full text-center rounded-lg shadow-lg p-6 bg-white'>
               <h1 className='text-2xl mt-3'>ログイン</h1>
-              {error && <div>{error}</div>}
+              {error && <h3 className='text-sm text-rose-700 pt-2'>{error}</h3>}
               <form
-                className='flex flex-col items-center space-y-3 pt-6'
+                className='flex flex-col items-center space-y-3 pt-4'
                 onSubmit={handleSubmit}
               >
                 <input
@@ -67,7 +67,9 @@ export default function Login() {
                 >
                   Sign In
                 </button>
-                <Link to={'/reset-password'}>Forgot Password?</Link>
+                <Link className='underline text-sm' to={'/reset-password'}>
+                  Forgot Password?
+                </Link>
               </form>
               <div className='inline-flex w-full items-center justify-center py-3'>
                 <span className='h-px w-5/12 bg-black'></span>

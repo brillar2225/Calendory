@@ -4,9 +4,13 @@ export const theme = {
   extend: {
     spacing: {
       13: '3.25rem',
+      15: '3.75rem',
       17: '4.25rem',
+      26: '6.5rem',
       34.5: '8.625rem',
       37.5: '8.75rem',
+      '2/5': '40%',
+      '2/7': '28%',
       '9/10': '90%',
     },
     colors: {
@@ -22,6 +26,9 @@ export const theme = {
       gray: {
         95: '#f2f2f2',
       },
+    },
+    fontSize: {
+      '2xs': ['0.625rem', '0.875rem'],
     },
   },
 };
