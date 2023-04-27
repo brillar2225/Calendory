@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export default function Home() {
-  const {
-    state: { user },
-  } = useAuthContext();
+  const { user } = useAuthContext();
 
   return (
     <section className='h-9/10 w-full'>

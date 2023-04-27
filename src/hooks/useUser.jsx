@@ -108,7 +108,7 @@ export default function useUser() {
       );
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);
-      navigate(`/${userCredential.user.uid}`);
+      navigate('/');
     } catch (e) {
       setError('ログインが出来ませんでした');
       setIsLoading(false);
@@ -218,7 +218,7 @@ export default function useUser() {
         });
         dispatch({ type: 'SET_USER', payload: userCredential.user });
         setIsLoading(false);
-        navigate(`/${userCredential.user.uid}`);
+        navigate('/');
       } catch (e) {
         setError(e.message);
         setIsLoading(false);
@@ -233,6 +233,7 @@ export default function useUser() {
   const logout = async () => {
     await signOut(auth);
     dispatch({ type: 'REMOVE_USER', payload: null });
+    return navigate('/');
   };
 
   // パスワードをリセット

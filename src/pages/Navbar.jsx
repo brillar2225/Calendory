@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext';
 import useUser from '../hooks/useUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export default function Navbar({ user }) {
+export default function Navbar() {
+  const { user } = useAuthContext();
   const { logout } = useUser();
   const [toggle, setToggle] = useState(true);
 

@@ -4,6 +4,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useState,
 } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
@@ -31,9 +32,11 @@ export const reducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoading(false);
       if (user) {
         dispatch({ type: SET_USER, payload: user });
       } else {
@@ -43,8 +46,9 @@ export const AuthContextProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  if (isLoading) return <div>Loading...</div>;
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ ...state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );
@@ -52,5 +56,6 @@ export const AuthContextProvider = ({ children }) => {
 
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
+  console.log(context);
   return useMemo(() => context, [context]);
 };
