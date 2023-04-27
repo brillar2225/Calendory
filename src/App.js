@@ -4,8 +4,10 @@ import NotFound from './routes/NotFound';
 import Home from './routes/Home';
 import Join from './routes/Join';
 import Login from './routes/Login';
-import ForgotPassword from './routes/ForgotPassword';
+import Account from './routes/Account';
 import Mypage from './routes/Mypage';
+import ForgotPassword from './routes/ForgotPassword';
+import ChangePassword from './routes/ChangePassword';
 import TodoList from './routes/TodoList';
 
 const router = createBrowserRouter([
@@ -32,7 +34,11 @@ const router = createBrowserRouter([
       },
       {
         path: ':uid',
-        element: <Mypage />,
+        element: <Account />,
+        children: [
+          { index: true, element: <Mypage /> },
+          { path: ':uid/change-password', element: <ChangePassword /> },
+        ],
       },
       {
         path: ':uid/todos',
