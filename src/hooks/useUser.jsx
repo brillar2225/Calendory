@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import {
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
+  reauthenticateWithCredential,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateEmail,
   updateProfile,
 } from 'firebase/auth';
 import {
@@ -18,6 +21,7 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import {
@@ -229,6 +233,70 @@ export default function useUser() {
     }
   };
 
+  // ユーザー情報をアップデート
+  const updateUser = async (initialValue, values) => {
+    const { displayName: prevDisplayName, email: prevEmail } = initialValue;
+    const { displayName, email, password } = values;
+    console.log(prevDisplayName, displayName);
+    console.log(prevEmail, email);
+    console.log(prevDisplayName !== displayName, prevEmail !== email);
+    try {
+      setError(null);
+      setIsLoading(true);
+      if (prevDisplayName !== displayName) {
+        await updateProfile(auth.currentUser, {
+          displayName,
+        });
+      }
+      if (prevEmail !== email) {
+        const credential = EmailAuthProvider.credential(
+          auth.currentUser.email,
+          password
+        );
+        reauthenticateWithCredential(auth.currentUser, credential)
+          .then(() => {
+            updateEmail(auth.currentUser, email)
+              .then(() => {
+                sendEmailVerification(auth.currentUser)
+                  .then(() => {
+                    console.log('Succeeded in updating email');
+                  })
+                  .catch((e) => {
+                    console.log(e.message);
+                    setError('Failure to send email verification');
+                    setIsLoading(false);
+                  });
+              })
+              .catch((e) => {
+                console.log(e.message);
+                setError('Failure to update email');
+                setIsLoading(false);
+              });
+          })
+          .catch((e) => {
+            console.log(e.message);
+            setError('Failure to re-authenticate with credential');
+            setIsLoading(false);
+          });
+      }
+      try {
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          displayName,
+          email,
+        });
+        setIsLoading(false);
+      } catch (e) {
+        console.log(e.message);
+        setError('ユーザー情報を保存することが出来ませんでした');
+        setIsLoading(false);
+      }
+    } catch (e) {
+      console.log(e.message);
+      setError('ユーザー情報をアップデートできませんでした');
+      setIsLoading(false);
+    }
+  };
+
   // ログアウト
   const logout = async () => {
     await signOut(auth);
@@ -285,6 +353,7 @@ export default function useUser() {
     googleLogin,
     twitterLogin,
     githubLogin,
+    updateUser,
     logout,
     resetPassword,
   };
