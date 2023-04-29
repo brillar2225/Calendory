@@ -11,6 +11,7 @@ import {
   signInWithPopup,
   signOut,
   updateEmail,
+  updatePassword,
   updateProfile,
 } from 'firebase/auth';
 import {
@@ -48,12 +49,12 @@ export default function useUser() {
       setIsLoading(true);
       const { displayName, email, password, confirmPassword } = values;
       if (password === '' || confirmPassword === '') {
-        setError('パスワードを入力して下さい');
+        setError('パスワードをご入力下さい');
         setIsLoading(false);
         return;
       }
       if (password !== confirmPassword) {
-        setError('パスワードが一致しておりません');
+        setError('パスワードが一致していません');
         setIsLoading(false);
         return;
       }
@@ -86,9 +87,11 @@ export default function useUser() {
         setIsLoading(false);
         navigate('/');
       } catch (e) {
+        console.log(e.code, e.message);
         setError(e.message);
       }
     } catch (e) {
+      console.log(e.code, e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -101,7 +104,7 @@ export default function useUser() {
       setIsLoading(true);
       const { email, password } = values;
       if (email === '' || password === '') {
-        setError('メールアドレスまたはパスワードを入力して下さい');
+        setError('メールアドレスまたはパスワードをご入力下さい');
         setIsLoading(false);
         return;
       }
@@ -114,7 +117,22 @@ export default function useUser() {
       setIsLoading(false);
       navigate('/');
     } catch (e) {
-      setError('ログインが出来ませんでした');
+      console.log(e.code, e.message);
+      switch (e.code) {
+        case 'auth/user-not-found':
+          setError('メールアドレスが正しいかご確認下さい');
+          break;
+        case 'auth/wrong-password':
+          setError('パスワードが間違っています');
+          break;
+        case 'auth/too-many-requests':
+          setError(
+            'ログインに5回以上失敗しました。しばらく時間を置いてから再度お試し下さい。'
+          );
+          break;
+        default:
+          setError('ログインに失敗しました');
+      }
       setIsLoading(false);
     }
   };
@@ -148,10 +166,12 @@ export default function useUser() {
         setIsLoading(false);
         navigate('/');
       } catch (e) {
+        console.log(e.code, e.message);
         setError(e.message);
         setIsLoading(false);
       }
     } catch (e) {
+      console.log(e.code, e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -186,10 +206,12 @@ export default function useUser() {
         setIsLoading(false);
         navigate('/');
       } catch (e) {
+        console.log(e.code, e.message);
         setError(e.message);
         setIsLoading(false);
       }
     } catch (e) {
+      console.log(e.code, e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -224,10 +246,12 @@ export default function useUser() {
         setIsLoading(false);
         navigate('/');
       } catch (e) {
+        console.log(e.code, e.message);
         setError(e.message);
         setIsLoading(false);
       }
     } catch (e) {
+      console.log(e.code, e.message);
       setError(e.message);
       setIsLoading(false);
     }
@@ -235,14 +259,11 @@ export default function useUser() {
 
   // ユーザー情報をアップデート
   const updateUser = async (initialValue, values) => {
-    const { displayName: prevDisplayName, email: prevEmail } = initialValue;
-    const { displayName, email, password } = values;
-    console.log(prevDisplayName, displayName);
-    console.log(prevEmail, email);
-    console.log(prevDisplayName !== displayName, prevEmail !== email);
     try {
       setError(null);
       setIsLoading(true);
+      const { displayName: prevDisplayName, email: prevEmail } = initialValue;
+      const { displayName, email, password } = values;
       if (prevDisplayName !== displayName) {
         await updateProfile(auth.currentUser, {
           displayName,
@@ -253,46 +274,30 @@ export default function useUser() {
           auth.currentUser.email,
           password
         );
-        reauthenticateWithCredential(auth.currentUser, credential)
-          .then(() => {
-            updateEmail(auth.currentUser, email)
-              .then(() => {
-                sendEmailVerification(auth.currentUser)
-                  .then(() => {
-                    console.log('Succeeded in updating email');
-                  })
-                  .catch((e) => {
-                    console.log(e.message);
-                    setError('Failure to send email verification');
-                    setIsLoading(false);
-                  });
-              })
-              .catch((e) => {
-                console.log(e.message);
-                setError('Failure to update email');
-                setIsLoading(false);
-              });
-          })
-          .catch((e) => {
-            console.log(e.message);
-            setError('Failure to re-authenticate with credential');
-            setIsLoading(false);
-          });
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await updateEmail(auth.currentUser, email);
+        await sendEmailVerification(auth.currentUser);
+        console.log('Succceed in updating email');
       }
-      try {
-        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-          displayName,
-          email,
-        });
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e.message);
-        setError('ユーザー情報を保存することが出来ませんでした');
-        setIsLoading(false);
-      }
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        displayName,
+        email,
+      });
+      setIsLoading(false);
     } catch (e) {
-      console.log(e.message);
-      setError('ユーザー情報をアップデートできませんでした');
+      console.log(e.code, e.message);
+      switch (e.code) {
+        case 'auth/wrong-password':
+          setError('パスワードが間違っています');
+          break;
+        case 'auth/too-many-requests':
+          setError(
+            'ログインに5回以上失敗しました。しばらく時間を置いてから再度お試し下さい。'
+          );
+          break;
+        default:
+          setError('ユーザー情報を変更できませんでした');
+      }
       setIsLoading(false);
     }
   };
@@ -311,7 +316,7 @@ export default function useUser() {
       setIsLoading(true);
       const { displayName, email } = values;
       if (displayName === '' || email === '') {
-        setError('メールアドレスまたはパスワードを入力して下さい');
+        setError('メールアドレスまたはパスワードをご入力下さい');
         setIsLoading(false);
         return navigate('/reset-password');
       }
@@ -323,14 +328,15 @@ export default function useUser() {
         )
       );
       if (querySnapshot.empty !== false) {
-        setError('ユーザー名またはメールアドレスを正しく入力して下さい');
+        setError('ユーザー名またはメールアドレスを正しくご入力下さい');
         setIsLoading(false);
         return navigate('/reset-password');
       }
       try {
         await sendPasswordResetEmail(auth, email);
         console.log('Succeeded in sending password reset email');
-      } catch {
+      } catch (e) {
+        console.log(e.code, e.message);
         setError('最初から再度やり直して下さい');
         setIsLoading(false);
         return navigate('/reset-password');
@@ -339,8 +345,53 @@ export default function useUser() {
         return navigate('/login');
       }
     } catch (e) {
-      console.log(e.message);
+      console.log(e.code, e.message);
       setError(e.message);
+      setIsLoading(false);
+    }
+  };
+
+  // パスワードを変更
+  const changePassword = async (values) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const { password, newPassword, confirmPassword } = values;
+      if (password === '') {
+        setError('パスワードをご入力下さい');
+        setIsLoading(false);
+        return;
+      }
+      if (newPassword === '' || confirmPassword === '') {
+        setError('新しいパスワードをご入力下さい');
+        setIsLoading(false);
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        setError('パスワードが一致していません');
+        setIsLoading(false);
+        return;
+      }
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        password
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await updatePassword(auth.currentUser, newPassword);
+      setIsLoading(false);
+      return navigate('/');
+    } catch (e) {
+      console.log(e.code, e.message);
+      switch (e.code) {
+        case 'auth/wrong-password':
+          setError('パスワードが間違っています');
+          break;
+        case 'auth/user-mismatch':
+          setError(e.code, e.message);
+          break;
+        default:
+          setError('パスワードの変更が出来ませんでした');
+      }
       setIsLoading(false);
     }
   };
@@ -356,5 +407,6 @@ export default function useUser() {
     updateUser,
     logout,
     resetPassword,
+    changePassword,
   };
 }

@@ -38,7 +38,7 @@ export default function Login() {
           <div className='h-full flex flex-col items-center justify-center bg-slate-50'>
             <div className='max-w-xs md:max-w-md w-full text-center rounded-lg shadow-lg p-6 bg-white'>
               <h1 className='text-2xl mt-3'>ログイン</h1>
-              {error && <h3 className='text-sm text-rose-700 pt-2'>{error}</h3>}
+              {error && <h3 className='text-xs text-rose-700 pt-2'>{error}</h3>}
               <form
                 className='flex flex-col items-center space-y-3 pt-4'
                 onSubmit={handleSubmit}

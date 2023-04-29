@@ -9,7 +9,7 @@ export default function Account() {
     <section className='h-9/10'>
       <h1 className='sr-only'>My Page</h1>
       <div className='h-full flex flex-col items-center justify-center bg-slate-50'>
-        <div className='max-w-xs md:max-w-md w-full text-center rounded-lg shadow-lg p-6 bg-white'>
+        <div className='max-w-xs md:max-w-md w-full text-center'>
           <Outlet context={{ user }} />
         </div>
       </div>

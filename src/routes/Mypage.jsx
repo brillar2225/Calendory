@@ -24,7 +24,7 @@ export default function Mypage() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     updateUser(initialValue, values);
     setValues(values);
@@ -36,18 +36,18 @@ export default function Mypage() {
         <div>Loading...</div>
       ) : (
         <form
-          className='flex flex-col items-center space-y-4 relative'
+          className='flex flex-col items-center p-6 relative rounded-lg shadow-lg bg-white'
           onSubmit={handleSubmit}
         >
           <h2 className='text-xl'>{user.displayName}のマイページ</h2>
           <img
-            className='rounded-full h-60 w-60'
+            className='rounded-full h-52 w-52 mt-4'
             src={user.photoUrl ? user.photoUrl : user.photoURL}
             alt={user.displayName}
           />
           {edit && (
             <label
-              className='text-xs absolute top-[280px] left-3'
+              className='text-xs absolute top-[290px] left-9'
               htmlFor='displayName'
             >
               ユーザー名：
@@ -59,7 +59,7 @@ export default function Mypage() {
               edit
                 ? 'border-none shadow-none bg-transparent'
                 : 'border shadow-sm'
-            } text-lg w-full h-11 rounded-lg px-3 py-2`}
+            } text-lg w-full h-11 rounded-lg px-3 py-2 mt-4`}
             name='displayName'
             id='displayName'
             value={values.displayName}
@@ -69,7 +69,7 @@ export default function Mypage() {
           />
           {edit && (
             <label
-              className='text-xs absolute top-[340px] left-3'
+              className='text-xs absolute top-[348px] left-9'
               htmlFor='email'
             >
               メールアドレス：
@@ -81,7 +81,7 @@ export default function Mypage() {
               edit
                 ? 'border-none shadow-none bg-transparent'
                 : 'border shadow-sm'
-            } text-lg w-full h-11 rounded-lg px-3 py-2`}
+            } text-lg w-full h-11 rounded-lg px-3 py-2 mt-4`}
             name='email'
             id='email'
             value={values.email}
@@ -96,7 +96,7 @@ export default function Mypage() {
                 edit
                   ? 'border-none shadow-none bg-transparent'
                   : 'border shadow-sm'
-              } text-lg w-full h-11 rounded-lg px-3 py-2`}
+              } text-lg w-full h-11 rounded-lg px-3 py-2 mt-4`}
               placeholder='Enter password to edit'
               name='password'
               id='password'
@@ -105,17 +105,17 @@ export default function Mypage() {
               required
             />
           )}
-          {error && <div>{error}</div>}
+          {error && <h3 className='text-xs text-rose-700 pt-2'>{error}</h3>}
           {edit ? (
             <button
               type='button'
               onClick={handleEdit}
-              className='h-11 w-full rounded-lg border border-button-blue text-button-blue'
+              className='h-11 w-full rounded-lg border border-button-blue text-button-blue mt-4'
             >
               Edit
             </button>
           ) : (
-            <div className='flex flex-col items-center space-y-3 w-full'>
+            <div className='flex flex-col items-center space-y-3 w-full mt-4'>
               <div className='inline-flex justify-between w-full'>
                 <button
                   type='button'
