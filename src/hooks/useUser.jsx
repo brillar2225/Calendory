@@ -4,6 +4,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import {
   EmailAuthProvider,
   createUserWithEmailAndPassword,
+  deleteUser,
   reauthenticateWithCredential,
   sendEmailVerification,
   sendPasswordResetEmail,
@@ -17,6 +18,7 @@ import {
 import {
   Timestamp,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -396,6 +398,44 @@ export default function useUser() {
     }
   };
 
+  // アカウント削除
+  const deleteAccount = async (values) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const { password, confirmPassword } = values;
+      if (password === '' || confirmPassword === '') {
+        setError('パスワードをご入力下さい');
+        setIsLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('パスワードが一致していません');
+        setIsLoading(false);
+        return;
+      }
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        password
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await deleteDoc(doc(db, 'users', auth.currentUser.uid));
+      await deleteUser(auth.currentUser);
+      setIsLoading(false);
+      return navigate('/');
+    } catch (e) {
+      console.log(e.code, e.message);
+      switch (e.code) {
+        case 'auth/wrong-password':
+          setError('パスワードが間違っています');
+          break;
+        default:
+          setError('アカウント削除に失敗しました');
+      }
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     error,
@@ -408,5 +448,6 @@ export default function useUser() {
     logout,
     resetPassword,
     changePassword,
+    deleteAccount,
   };
 }

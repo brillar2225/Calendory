@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import useUser from '../hooks/useUser';
 
+const initialValue = {
+  password: '',
+  newPassword: '',
+  confirmPassword: '',
+};
+
 export default function ChangePassword() {
   const { user } = useOutletContext();
   const { isLoading, error, changePassword } = useUser();
-  const [values, setValues] = useState({
-    password: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+  const [values, setValues] = useState(initialValue);
 
   const handleChange = (e) => {
     setValues({
@@ -20,6 +22,7 @@ export default function ChangePassword() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setValues(initialValue);
     changePassword(values);
   };
 
@@ -76,9 +79,6 @@ export default function ChangePassword() {
                 Change
               </button>
             </div>
-            <button className='h-10 w-full mt-10 rounded-lg border text-sm border-button-red text-button-red hover:bg-button-red hover:border-none hover:text-white '>
-              アカウントを削除する
-            </button>
           </div>
         </form>
       )}

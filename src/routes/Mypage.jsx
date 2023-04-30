@@ -26,8 +26,8 @@ export default function Mypage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setValues({ ...values, password: initialValue.password });
     updateUser(initialValue, values);
-    setValues(values);
   };
 
   return (
@@ -115,7 +115,7 @@ export default function Mypage() {
               Edit
             </button>
           ) : (
-            <div className='flex flex-col items-center space-y-3 w-full mt-4'>
+            <div className='flex flex-col items-center space-y-3 w-full mt-5'>
               <div className='inline-flex justify-between w-full'>
                 <button
                   type='button'
@@ -131,12 +131,21 @@ export default function Mypage() {
                   Submit
                 </button>
               </div>
-              <Link
-                to={`${user.uid}/change-password`}
-                className='h-10 underline text-sm p-2 w-fit'
-              >
-                パスワード変更及びアカウント削除
-              </Link>
+              <div>
+                <Link
+                  to={`${user.uid}/password/change`}
+                  className='h-10 underline lg:no-underline lg:hover:underline text-sm'
+                >
+                  パスワード変更
+                </Link>
+                <span> / </span>
+                <Link
+                  to={`${user.uid}/delete`}
+                  className='h-10 underline lg:no-underline lg:hover:underline text-sm'
+                >
+                  アカウント削除
+                </Link>
+              </div>
             </div>
           )}
         </form>
