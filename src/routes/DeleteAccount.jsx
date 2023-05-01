@@ -34,12 +34,13 @@ export default function ChangePassword() {
     deleteAccount(values);
   };
 
-  if (isLoading) return <div>Loading...</div>;
   return (
     <>
-      {!show ? (
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
         <form
-          className='flex flex-col justify-center items-center p-6 rounded-lg shadow-lg bg-white'
+          className='flex flex-col justify-center items-center p-6 rounded-lg shadow-lg bg-white relative'
           onSubmit={handleSubmit}
         >
           <h2 className='text-xl'>アカウント削除</h2>
@@ -79,42 +80,43 @@ export default function ChangePassword() {
               </button>
             </div>
           </div>
+          {show && (
+            <div className='flex flex-col justify-center items-center p-6 absolute rounded-lg shadow-lg bg-white'>
+              <FontAwesomeIcon
+                icon={faXmark}
+                className='h-6 w-6 p-2 absolute top-px right-px'
+                onClick={handleClick}
+              />
+              <h2 className='text-2xl font-bold'>注意</h2>
+              <h4 className='text-base md:text-lg mt-6'>
+                アカウントを削除すると二度と{user.displayName}
+                様に関するアカウント情報を復元することは出来ません。
+              </h4>
+              <h3 className='text-base md"text-lg text-button-red mt-6'>
+                本当にアカウントを削除しますか？
+              </h3>
+              <div className='text-base md:text-lg mt-6'>
+                <input
+                  type='checkbox'
+                  name='checked'
+                  id='checked'
+                  checked={isChecked}
+                  onChange={(e) => setIsChecked(e.target.checked)}
+                  className='mr-2'
+                />
+                <label htmlFor='checked'>承知致しました。</label>
+              </div>
+              <button
+                disabled={!isChecked}
+                type='submit'
+                className='h-11 w-1/2 mt-6 text-lg disabled:bg-slate-400 rounded-lg border-none bg-button-red text-white'
+                onClick={handleSubmit}
+              >
+                Delete Account
+              </button>
+            </div>
+          )}
         </form>
-      ) : (
-        <div className='flex flex-col justify-center items-center p-6 relative rounded-lg shadow-lg bg-white'>
-          <FontAwesomeIcon
-            icon={faXmark}
-            className='h-6 w-6 p-2 text-primary-black absolute top-4 right-4'
-            onClick={handleClick}
-          />
-          <h2 className='text-2xl font-bold'>注意</h2>
-          <h4 className='text-lg mt-6'>
-            アカウントを削除すると二度と{user.displayName}
-            様に関するアカウント情報を復元することは出来ません。
-          </h4>
-          <h3 className='text-lg font-semibold mt-6'>
-            それでもアカウントを削除しますか？
-          </h3>
-          <div className=' text-lg mt-6'>
-            <input
-              type='checkbox'
-              name='checked'
-              id='checked'
-              checked={isChecked}
-              onClick={() => setIsChecked((prev) => !prev)}
-              className='mr-2'
-            />
-            <label htmlFor='checked'>承知致しました。</label>
-          </div>
-          <button
-            disabled={!isChecked}
-            type='submit'
-            className='h-11 w-1/2 mt-6 text-lg disabled:bg-slate-400 rounded-lg border-none bg-button-red text-white'
-            onClick={handleSubmit}
-          >
-            Delete Account
-          </button>
-        </div>
       )}
     </>
   );

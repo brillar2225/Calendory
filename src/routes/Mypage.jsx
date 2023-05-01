@@ -86,7 +86,7 @@ export default function Mypage() {
             id='email'
             value={values.email}
             onChange={handleChange}
-            disabled={edit}
+            disabled={edit || user.providerData[0].providerId !== 'password'}
             required
           />
           {!edit && (
@@ -131,21 +131,30 @@ export default function Mypage() {
                   Submit
                 </button>
               </div>
-              <div>
-                <Link
-                  to={`${user.uid}/password/change`}
-                  className='h-10 underline lg:no-underline lg:hover:underline text-sm'
-                >
-                  パスワード変更
-                </Link>
-                <span> / </span>
+              {user.providerData[0].providerId === 'password' ? (
+                <div>
+                  <Link
+                    to={`${user.uid}/password/change`}
+                    className='h-10 underline lg:no-underline lg:hover:underline text-sm'
+                  >
+                    パスワード変更
+                  </Link>
+                  <span> / </span>
+                  <Link
+                    to={`${user.uid}/delete`}
+                    className='h-10 underline lg:no-underline lg:hover:underline text-sm'
+                  >
+                    アカウント削除
+                  </Link>
+                </div>
+              ) : (
                 <Link
                   to={`${user.uid}/delete`}
                   className='h-10 underline lg:no-underline lg:hover:underline text-sm'
                 >
                   アカウント削除
                 </Link>
-              </div>
+              )}
             </div>
           )}
         </form>

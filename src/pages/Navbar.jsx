@@ -15,7 +15,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className='inline-flex items-center'>
+    <nav className='inline-flex items-center z-50'>
       {user ? (
         <ul
           className={`${
