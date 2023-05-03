@@ -13,6 +13,8 @@ export default function Mypage() {
   const [edit, setEdit] = useState(true);
   const { isLoading, error, updateUser } = useUser();
 
+  const provider = user.providerData[0].providerId;
+
   const handleEdit = () => {
     setEdit((prev) => !prev);
   };
@@ -86,10 +88,10 @@ export default function Mypage() {
             id='email'
             value={values.email}
             onChange={handleChange}
-            disabled={edit || user.providerData[0].providerId !== 'password'}
+            disabled={edit || provider !== 'password'}
             required
           />
-          {!edit && (
+          {!edit && provider === 'password' && (
             <input
               type='password'
               className={`${
@@ -131,7 +133,7 @@ export default function Mypage() {
                   Submit
                 </button>
               </div>
-              {user.providerData[0].providerId === 'password' ? (
+              {provider === 'password' ? (
                 <div>
                   <Link
                     to={`${user.uid}/password/change`}

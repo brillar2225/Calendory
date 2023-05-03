@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   deleteUser,
   reauthenticateWithCredential,
+  reauthenticateWithPopup,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -153,7 +154,6 @@ export default function useUser() {
       try {
         const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
         if (docSnap.exists()) {
-          dispatch({ type: 'SET_USER', payload: docSnap.data() });
           setIsLoading(false);
           return navigate(`/${userCredential.user.uid}`);
         }
@@ -193,7 +193,6 @@ export default function useUser() {
       try {
         const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
         if (docSnap.exists()) {
-          dispatch({ type: 'SET_USER', payload: docSnap.data() });
           setIsLoading(false);
           return navigate(`/${userCredential.user.uid}`);
         }
@@ -233,7 +232,6 @@ export default function useUser() {
       try {
         const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
         if (docSnap.exists()) {
-          dispatch({ type: 'SET_USER', payload: docSnap.data() });
           setIsLoading(false);
           return navigate('/');
         }
@@ -399,26 +397,34 @@ export default function useUser() {
   };
 
   // アカウント削除
-  const deleteAccount = async (values) => {
+  const deleteAccount = async (provider, values) => {
     try {
       setError(null);
       setIsLoading(true);
-      const { password, confirmPassword } = values;
-      if (password === '' || confirmPassword === '') {
-        setError('パスワードをご入力下さい');
-        setIsLoading(false);
-        return;
+      if (provider === 'password') {
+        const { password, confirmPassword } = values;
+        if (password === '' || confirmPassword === '') {
+          setError('パスワードをご入力下さい');
+          setIsLoading(false);
+          return;
+        }
+        if (password !== confirmPassword) {
+          setError('パスワードが一致していません');
+          setIsLoading(false);
+          return;
+        }
+        const credential = EmailAuthProvider.credential(
+          auth.currentUser.email,
+          password
+        );
+        await reauthenticateWithCredential(auth.currentUser, credential);
       }
-      if (password !== confirmPassword) {
-        setError('パスワードが一致していません');
-        setIsLoading(false);
-        return;
-      }
-      const credential = EmailAuthProvider.credential(
-        auth.currentUser.email,
-        password
-      );
-      await reauthenticateWithCredential(auth.currentUser, credential);
+      if (provider === 'Google')
+        await reauthenticateWithPopup(auth.currentUser, googleProvider);
+      if (provider === 'Twitter')
+        await reauthenticateWithPopup(auth.currentUser, twitterProvider);
+      if (provider === 'Github')
+        await reauthenticateWithPopup(auth.currentUser, githubProvider);
       await deleteDoc(doc(db, 'users', auth.currentUser.uid));
       await deleteUser(auth.currentUser);
       setIsLoading(false);
