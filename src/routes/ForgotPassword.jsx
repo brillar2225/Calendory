@@ -10,12 +10,12 @@ const initialValue = {
 
 function FirstStep({ step, error, displayName, onChange, onNext }) {
   return (
-    <div className='flex flex-col items-center justify-around h-5/6 w-11/12 relative'>
-      <label className='text-left w-9/10 text-xl font-bold' htmlFor='first'>
+    <div className='flex flex-col items-center justify-evenly h-5/6 w-11/12 relative'>
+      <label className='text-lg text-left w-9/10' htmlFor='first'>
         STEP {step}
       </label>
       {error && (
-        <h3 className='text-2xs md:text-xs text-rose-700 absolute top-2/7'>
+        <h3 className='text-xs md:text-sm text-rose-700 absolute top-2/7'>
           {error}
         </h3>
       )}
@@ -41,12 +41,12 @@ function FirstStep({ step, error, displayName, onChange, onNext }) {
 
 function SecondStep({ step, error, email, onChange, onPrev, onSubmit }) {
   return (
-    <div className='flex flex-col items-center justify-around h-5/6 w-11/12 relative'>
-      <label className='text-left w-9/10 text-xl font-bold' htmlFor='second'>
+    <div className='flex flex-col items-center justify-evenly h-5/6 w-11/12 relative'>
+      <label className='text-lg text-left w-9/10' htmlFor='second'>
         STEP {step}
       </label>
       {error && (
-        <h3 className='text-2xs md:text-xs text-rose-700 absolute top-2/7'>
+        <h3 className='text-xs md:text-sm text-rose-700 absolute top-2/7'>
           {error}
         </h3>
       )}
@@ -113,9 +113,10 @@ export default function ForgotPassword() {
       <div className='h-full flex items-center justify-center'>
         <div className='max-w-xs md:max-w-md w-full rounded-lg shadow-lg p-3 md:p-6 bg-white'>
           <form
-            className='flex items-center h-80 justify-around'
+            className='flex flex-col items-center justify-center h-80'
             onSubmit={handleSubmit}
           >
+            <h2 className='text-xl font-bold'>パスワード再設定</h2>
             {step === 1 && (
               <FirstStep
                 step={step}

@@ -41,7 +41,7 @@ export default function Mypage() {
           className='flex flex-col items-center p-6 relative rounded-lg shadow-lg bg-white'
           onSubmit={handleSubmit}
         >
-          <h2 className='text-xl'>{user.displayName}のマイページ</h2>
+          <h1 className='text-xl font-bold'>{user.displayName}のマイページ</h1>
           <img
             className='rounded-full h-52 w-52 mt-4'
             src={user.photoUrl ? user.photoUrl : user.photoURL}

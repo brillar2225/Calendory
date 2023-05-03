@@ -94,7 +94,7 @@ export default function ChangePassword() {
                 to={`/${user.uid}`}
                 className='h-11 w-[45%] rounded-lg border border-button-blue text-button-blue flex items-center justify-center'
               >
-                Go Back
+                Previous
               </Link>
               <button
                 type='button'

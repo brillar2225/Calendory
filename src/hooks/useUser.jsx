@@ -48,16 +48,16 @@ export default function useUser() {
   // メールアドレスとパスワードでの会員登録
   const register = async (values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const { displayName, email, password, confirmPassword } = values;
       if (password === '' || confirmPassword === '') {
-        setError('パスワードをご入力下さい');
+        setError('パスワードをご入力下さい。');
         setIsLoading(false);
         return;
       }
       if (password !== confirmPassword) {
-        setError('パスワードが一致していません');
+        setError('パスワードが一致していません。');
         setIsLoading(false);
         return;
       }
@@ -77,25 +77,35 @@ export default function useUser() {
         photoURL: avatar,
       });
       await sendEmailVerification(auth.currentUser);
-      try {
-        setError(null);
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          createdAt: Timestamp.fromDate(new Date()),
-          uid: userCredential.user.uid,
-          displayName: userCredential.user.displayName,
-          email: userCredential.user.email,
-          photoUrl: avatar,
-        });
-        dispatch({ type: 'SET_USER', payload: userCredential.user });
-        setIsLoading(false);
-        navigate('/');
-      } catch (e) {
-        console.log(e.code, e.message);
-        setError(e.message);
-      }
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        createdAt: Timestamp.fromDate(new Date()),
+        uid: userCredential.user.uid,
+        displayName: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoUrl: avatar,
+      });
+      dispatch({ type: 'SET_USER', payload: userCredential.user });
+      setIsLoading(false);
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
-      setError(e.message);
+      switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/email-already-in-use':
+          setError('すでに登録済みのメールアドレスです。');
+          break;
+        case 'auth/weak-password':
+          setError('パスワードは6文字以上ご入力下さい。');
+          break;
+        case 'auth/invalid-email':
+          setError('メールアドレスの形式が正しくありません。');
+          break;
+        default:
+          setError('会員登録に失敗しました。');
+          break;
+      }
       setIsLoading(false);
     }
   };
@@ -103,11 +113,11 @@ export default function useUser() {
   // メールアドレスとパスワードでのログイン
   const login = async (values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const { email, password } = values;
       if (email === '' || password === '') {
-        setError('メールアドレスまたはパスワードをご入力下さい');
+        setError('メールアドレスまたはパスワードをご入力下さい。');
         setIsLoading(false);
         return;
       }
@@ -118,15 +128,21 @@ export default function useUser() {
       );
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);
-      navigate('/');
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
-        case 'auth/user-not-found':
-          setError('メールアドレスが正しいかご確認下さい');
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/user-not-found' || 'auth/user-mismatch':
+          setError('メールアドレスまたはパスワードが間違っています。');
           break;
         case 'auth/wrong-password':
-          setError('パスワードが間違っています');
+          setError('パスワードが間違っています。');
+          break;
+        case 'auth/invalid-email':
+          setError('メールアドレスの形式が正しくありません。');
           break;
         case 'auth/too-many-requests':
           setError(
@@ -134,7 +150,7 @@ export default function useUser() {
           );
           break;
         default:
-          setError('ログインに失敗しました');
+          setError('ログインに失敗しました。');
       }
       setIsLoading(false);
     }
@@ -143,38 +159,49 @@ export default function useUser() {
   // Googleログイン
   const googleLogin = async () => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const userCredential = await signInWithPopup(auth, googleProvider);
       if (!userCredential) {
-        setError('ログインが出来ませんでした');
+        setError('ログインが出来ませんでした。');
         setIsLoading(false);
         return navigate('/login');
       }
-      try {
-        const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
-        if (docSnap.exists()) {
-          setIsLoading(false);
-          return navigate(`/${userCredential.user.uid}`);
-        }
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          createdAt: Timestamp.fromDate(new Date()),
-          uid: userCredential.user.uid,
-          displayName: userCredential.user.displayName,
-          email: userCredential.user.email,
-          photoUrl: userCredential.user.photoURL,
-        });
-        dispatch({ type: 'SET_USER', payload: userCredential.user });
+      const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
+      if (docSnap.exists()) {
         setIsLoading(false);
-        navigate('/');
-      } catch (e) {
-        console.log(e.code, e.message);
-        setError(e.message);
-        setIsLoading(false);
+        return navigate(`/${userCredential.user.uid}`);
       }
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        createdAt: Timestamp.fromDate(new Date()),
+        uid: userCredential.user.uid,
+        displayName: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoUrl: userCredential.user.photoURL,
+      });
+      dispatch({ type: 'SET_USER', payload: userCredential.user });
+      setIsLoading(false);
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
-      setError(e.message);
+      switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/account-exists-with-different-credential':
+          setError('メールアドレスがすでに登録されています。');
+          break;
+        case 'auth/popup-blocked':
+          setError('ポップアップブロックを解除して再度お試し下さい。');
+          break;
+        case 'auth/too-many-requests':
+          setError(
+            'ログインに5回以上失敗しました。しばらく時間を置いてから再度お試し下さい。'
+          );
+          break;
+        default:
+          setError('Googleログインに失敗しました。');
+      }
       setIsLoading(false);
     }
   };
@@ -182,38 +209,49 @@ export default function useUser() {
   // Twitterログイン
   const twitterLogin = async () => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const userCredential = await signInWithPopup(auth, twitterProvider);
       if (!userCredential) {
-        setError('ログインが出来ませんでした');
+        setError('ログインが出来ませんでした。');
         setIsLoading(false);
         return navigate('/login');
       }
-      try {
-        const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
-        if (docSnap.exists()) {
-          setIsLoading(false);
-          return navigate(`/${userCredential.user.uid}`);
-        }
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          createdAt: Timestamp.fromDate(new Date()),
-          uid: userCredential.user.uid,
-          displayName: userCredential.user.displayName,
-          email: userCredential.user.email,
-          photoUrl: userCredential.user.photoURL,
-        });
-        dispatch({ type: 'SET_USER', payload: userCredential.user });
+      const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
+      if (docSnap.exists()) {
         setIsLoading(false);
-        navigate('/');
-      } catch (e) {
-        console.log(e.code, e.message);
-        setError(e.message);
-        setIsLoading(false);
+        return navigate(`/${userCredential.user.uid}`);
       }
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        createdAt: Timestamp.fromDate(new Date()),
+        uid: userCredential.user.uid,
+        displayName: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoUrl: userCredential.user.photoURL,
+      });
+      dispatch({ type: 'SET_USER', payload: userCredential.user });
+      setIsLoading(false);
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
-      setError(e.message);
+      switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/account-exists-with-different-credential':
+          setError('メールアドレスがすでに登録されています。');
+          break;
+        case 'auth/popup-blocked':
+          setError('ポップアップブロックを解除して再度お試し下さい。');
+          break;
+        case 'auth/too-many-requests':
+          setError(
+            'ログインに5回以上失敗しました。しばらく時間を置いてから再度お試し下さい。'
+          );
+          break;
+        default:
+          setError('Twitterログインに失敗しました。');
+      }
       setIsLoading(false);
     }
   };
@@ -221,38 +259,49 @@ export default function useUser() {
   // Githubログイン
   const githubLogin = async () => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const userCredential = await signInWithPopup(auth, githubProvider);
       if (!userCredential) {
-        setError('ログインが出来ませんでした');
+        setError('ログインが出来ませんでした。');
         setIsLoading(false);
         return navigate('/login');
       }
-      try {
-        const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
-        if (docSnap.exists()) {
-          setIsLoading(false);
-          return navigate('/');
-        }
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          createdAt: Timestamp.fromDate(new Date()),
-          uid: userCredential.user.uid,
-          displayName: userCredential.user.displayName,
-          email: userCredential.user.email,
-          photoUrl: userCredential.user.photoURL,
-        });
-        dispatch({ type: 'SET_USER', payload: userCredential.user });
+      const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
+      if (docSnap.exists()) {
         setIsLoading(false);
-        navigate('/');
-      } catch (e) {
-        console.log(e.code, e.message);
-        setError(e.message);
-        setIsLoading(false);
+        return navigate('/');
       }
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        createdAt: Timestamp.fromDate(new Date()),
+        uid: userCredential.user.uid,
+        displayName: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoUrl: userCredential.user.photoURL,
+      });
+      dispatch({ type: 'SET_USER', payload: userCredential.user });
+      setIsLoading(false);
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
-      setError(e.message);
+      switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/account-exists-with-different-credential':
+          setError('メールアドレスがすでに登録されています。');
+          break;
+        case 'auth/popup-blocked':
+          setError('ポップアップブロックを解除して再度お試し下さい。');
+          break;
+        case 'auth/too-many-requests':
+          setError(
+            'ログインに5回以上失敗しました。しばらく時間を置いてから再度お試し下さい。'
+          );
+          break;
+        default:
+          setError('Githubログインに失敗しました。');
+      }
       setIsLoading(false);
     }
   };
@@ -260,8 +309,8 @@ export default function useUser() {
   // ユーザー情報をアップデート
   const updateUser = async (initialValue, values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const { displayName: prevDisplayName, email: prevEmail } = initialValue;
       const { displayName, email, password } = values;
       if (prevDisplayName !== displayName) {
@@ -277,7 +326,6 @@ export default function useUser() {
         await reauthenticateWithCredential(auth.currentUser, credential);
         await updateEmail(auth.currentUser, email);
         await sendEmailVerification(auth.currentUser);
-        console.log('Succceed in updating email');
       }
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         displayName,
@@ -287,8 +335,17 @@ export default function useUser() {
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/user-not-found' || 'auth/user-mismatch':
+          setError('メールアドレスまたはパスワードが間違っています。');
+          break;
         case 'auth/wrong-password':
-          setError('パスワードが間違っています');
+          setError('パスワードが間違っています。');
+          break;
+        case 'auth/invalid-email':
+          setError('メールアドレスの形式が正しくありません。');
           break;
         case 'auth/too-many-requests':
           setError(
@@ -296,7 +353,7 @@ export default function useUser() {
           );
           break;
         default:
-          setError('ユーザー情報を変更できませんでした');
+          setError('ユーザー情報を変更できませんでした。');
       }
       setIsLoading(false);
     }
@@ -312,13 +369,12 @@ export default function useUser() {
   // パスワードをリセット
   const resetPassword = async (values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const { displayName, email } = values;
       if (displayName === '' || email === '') {
-        setError('メールアドレスまたはパスワードをご入力下さい');
+        setError('メールアドレスまたはパスワードをご入力下さい。');
         setIsLoading(false);
-        return navigate('/reset-password');
       }
       const querySnapshot = await getDocs(
         query(
@@ -328,25 +384,28 @@ export default function useUser() {
         )
       );
       if (querySnapshot.empty !== false) {
-        setError('ユーザー名またはメールアドレスを正しくご入力下さい');
+        setError('ユーザー名またはメールアドレスを正しくご入力下さい。');
         setIsLoading(false);
-        return navigate('/reset-password');
+        return;
       }
-      try {
-        await sendPasswordResetEmail(auth, email);
-        console.log('Succeeded in sending password reset email');
-      } catch (e) {
-        console.log(e.code, e.message);
-        setError('最初から再度やり直して下さい');
-        setIsLoading(false);
-        return navigate('/reset-password');
-      } finally {
-        setIsLoading(false);
-        return navigate('/login');
-      }
+      await sendPasswordResetEmail(auth, email);
+      setIsLoading(false);
+      return navigate('/login');
     } catch (e) {
       console.log(e.code, e.message);
-      setError(e.message);
+      switch (e.code) {
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/wrong-password':
+          setError('パスワードが間違っています。');
+          break;
+        case 'permission-denied':
+          setError('ユーザー名またはメールアドレスが間違っています。');
+          break;
+        default:
+          setError('パスワードの変更が出来ませんでした。');
+      }
       setIsLoading(false);
     }
   };
@@ -354,21 +413,21 @@ export default function useUser() {
   // パスワードを変更
   const changePassword = async (values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       const { password, newPassword, confirmPassword } = values;
       if (password === '') {
-        setError('パスワードをご入力下さい');
+        setError('パスワードをご入力下さい。');
         setIsLoading(false);
         return;
       }
       if (newPassword === '' || confirmPassword === '') {
-        setError('新しいパスワードをご入力下さい');
+        setError('新しいパスワードをご入力下さい。');
         setIsLoading(false);
         return;
       }
       if (newPassword !== confirmPassword) {
-        setError('パスワードが一致していません');
+        setError('パスワードが一致していません。');
         setIsLoading(false);
         return;
       }
@@ -383,14 +442,20 @@ export default function useUser() {
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
-        case 'auth/wrong-password':
-          setError('パスワードが間違っています');
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/invalid-email':
+          setError('メールアドレスの形式が正しくありません。');
+          break;
+        case 'auth/wrong-password' || 'permission-denied':
+          setError('パスワードが間違っています。');
           break;
         case 'auth/user-mismatch':
-          setError(e.code, e.message);
+          setError('メールアドレスまたはパスワードが間違っています。');
           break;
         default:
-          setError('パスワードの変更が出来ませんでした');
+          setError('パスワードの変更が出来ませんでした。');
       }
       setIsLoading(false);
     }
@@ -399,8 +464,8 @@ export default function useUser() {
   // アカウント削除
   const deleteAccount = async (provider, values) => {
     try {
-      setError(null);
       setIsLoading(true);
+      setError(null);
       if (provider === 'password') {
         const { password, confirmPassword } = values;
         if (password === '' || confirmPassword === '') {
@@ -432,8 +497,14 @@ export default function useUser() {
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
-        case 'auth/wrong-password':
+        case 'auth/network-request-failed':
+          setError('通信状況をご確認の上、再度お試し下さい。');
+          break;
+        case 'auth/wrong-password' || 'permission-denied':
           setError('パスワードが間違っています');
+          break;
+        case 'auth/popup-blocked':
+          setError('ポップアップブロックを解除して再度お試し下さい。');
           break;
         default:
           setError('アカウント削除に失敗しました');
