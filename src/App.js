@@ -1,15 +1,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Root from './routes/Root';
-import NotFound from './routes/NotFound';
-import Home from './routes/Home';
-import Join from './routes/Join';
-import Login from './routes/Login';
-import Account from './routes/Account';
-import Mypage from './routes/Mypage';
-import ForgotPassword from './routes/ForgotPassword';
-import ChangePassword from './routes/ChangePassword';
-import DeleteAccount from './routes/DeleteAccount';
-import TodoList from './routes/TodoList';
+import Root from './pages/Root';
+import NotFound from './pages/NotFound';
+import Home from './pages/Home/Home';
+import AuthLayout from './pages/Auth/AuthLayout';
+import Join from './pages/Auth/Join';
+import Login from './pages/Auth/Login';
+import ResetPassword from './pages/Auth/ResetPassword';
+import Account from './pages/User/Account';
+import Mypage from './pages/User/Mypage';
+import ChangePassword from './pages/User/ChangePassword';
+import DeleteUser from './pages/User/DeleteUser';
+import Calendory from './pages/Main/Calendory';
+import Calendar from './pages/Main/Calendar';
 
 const router = createBrowserRouter([
   {
@@ -22,29 +24,39 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'join',
-        element: <Join />,
-      },
-      {
-        path: 'login',
-        element: <Login />,
-      },
-      {
-        path: 'reset-password',
-        element: <ForgotPassword />,
-      },
-      {
-        path: ':uid',
-        element: <Account />,
+        element: <AuthLayout />,
         children: [
-          { index: true, element: <Mypage /> },
-          { path: ':uid/password/change', element: <ChangePassword /> },
-          { path: ':uid/delete', element: <DeleteAccount /> },
+          {
+            path: 'join',
+            element: <Join />,
+          },
+          {
+            path: 'login',
+            element: <Login />,
+          },
+          {
+            path: 'reset-password',
+            element: <ResetPassword />,
+          },
         ],
       },
       {
-        path: ':uid/todos',
-        element: <TodoList />,
+        path: ':uid',
+        element: <Calendory />,
+        children: [
+          { index: true, path: ':uid/:yymmdd', element: <Calendar /> },
+          // {path: ':uid/"yymmdd/todo', element: <TodoList/>},
+          // {path: ':uid/"yymmdd/diary', element: <Diary/>},
+        ],
+      },
+      {
+        path: ':uid/account',
+        element: <Account />,
+        children: [
+          { index: true, element: <Mypage /> },
+          { path: 'password', element: <ChangePassword /> },
+          { path: 'delete', element: <DeleteUser /> },
+        ],
       },
     ],
   },

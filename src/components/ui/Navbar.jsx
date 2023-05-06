@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../contexts/AuthContext';
-import useUser from '../hooks/useUser';
+import { useAuthContext } from '../../hooks/useAuthContext';
+import useUser from '../../hooks/User/useUser';
+import useToggle from '../../hooks/useToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
   const { user } = useAuthContext();
   const { logout } = useUser();
-  const [toggle, setToggle] = useState(true);
-
-  const handleToggle = () => {
-    setToggle((prev) => !prev);
-  };
+  const { toggle, handleToggle } = useToggle();
 
   return (
     <nav className='inline-flex items-center z-50'>
@@ -32,7 +29,7 @@ export default function Navbar() {
             </Link>
           </li>
           <li className='hidden lg:flex lg:items-center lg:justify-center'>
-            <Link to={`${user.uid}`}>
+            <Link to={`${user.uid}/account`}>
               <img
                 src={user.photoUrl ? user.photoUrl : user.photoURL}
                 alt={user.displayName}
@@ -68,7 +65,7 @@ export default function Navbar() {
         </ul>
       )}
       {user && (
-        <Link to={`/${user.uid}`} className='mr-2 lg:hidden'>
+        <Link to={`/${user.uid}/account`} className='mr-2 lg:hidden'>
           <img
             src={user.photoUrl ? user.photoUrl : user.photoURL}
             alt={user.displayName}

@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import { createContext, useEffect, useReducer, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
 
@@ -52,10 +45,4 @@ export const AuthContextProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuthContext = () => {
-  const context = useContext(AuthContext);
-  console.log(context);
-  return useMemo(() => context, [context]);
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../contexts/AuthContext';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 export default function Home() {
   const { user } = useAuthContext();
@@ -10,9 +10,11 @@ export default function Home() {
       <h1 className='sr-only'>Welcome to Calendory!</h1>
       <div>
         <h1>Welcome to Calendory</h1>
-        <Link to={user ? `${user.uid}` : '/login'}>
-          {user ? 'Start' : 'Sign In'}
-        </Link>
+        {user ? (
+          <Link to={`${user.uid}`}>カレンダーへ</Link>
+        ) : (
+          <Link to={'/login'}>はじめる</Link>
+        )}
       </div>
     </section>
   );

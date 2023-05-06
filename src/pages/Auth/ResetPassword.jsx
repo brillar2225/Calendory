@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import useUser from '../hooks/useUser';
+import useUser from '../../hooks/User/useUser';
+import { useNavigate } from 'react-router-dom';
 
 const initialValue = {
   displayName: '',
@@ -9,6 +10,7 @@ const initialValue = {
 };
 
 function FirstStep({ step, error, displayName, onChange, onNext }) {
+  const navigate = useNavigate();
   return (
     <div className='flex flex-col items-center justify-evenly h-5/6 w-11/12 relative'>
       <label className='text-lg text-left w-9/10' htmlFor='first'>
@@ -29,12 +31,20 @@ function FirstStep({ step, error, displayName, onChange, onNext }) {
         onChange={onChange}
         required
       />
-      <button
-        className='h-11 w-9/10 rounded-lg border-none bg-button-blue text-white'
-        onClick={onNext}
-      >
-        Next
-      </button>
+      <div className='inline-flex justify-between w-9/10'>
+        <button
+          className='h-11 w-1/2 rounded-lg border border-button-blue text-button-blue mr-2'
+          onClick={() => navigate(-1)}
+        >
+          Previous
+        </button>
+        <button
+          className='h-11 w-1/2 rounded-lg border-none bg-button-blue text-white'
+          onClick={onNext}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
@@ -78,7 +88,7 @@ function SecondStep({ step, error, email, onChange, onPrev, onSubmit }) {
   );
 }
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
   const { error, resetPassword } = useUser();
   const [values, setValues] = useState(initialValue);
   const [step, setStep] = useState(1);

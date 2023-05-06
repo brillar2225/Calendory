@@ -14,3 +14,41 @@
     font-family: 'Zen Maru Gothic', sans-serif;
   }
 }
+
+@layer components {
+  .btn {
+    @apply h-11 w-9/10 rounded-lg mt-2;
+  }
+
+  .btn-blue {
+    @apply border-none bg-button-blue text-white;
+  }
+
+  .btn-sub-blue {
+    @apply border border-button-blue text-button-blue;
+  }
+
+  .btn-red {
+    @apply border-none bg-button-red text-white;
+  }
+
+  .btn-disabled {
+    @apply border-none disabled:bg-slate-400 text-white;
+  }
+
+  .btn-social {
+    @apply flex justify-center items-center border-none bg-gray-95;
+  }
+
+  .input {
+    @apply w-9/10 h-11 px-3 py-2 mb-3 rounded-lg border shadow-sm;
+  }
+
+  .error {
+    @apply text-xs text-rose-700 pb-2;
+  }
+
+  .modal {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[500px] h-96 rounded-lg shadow-lg bg-white;
+  }
+}
