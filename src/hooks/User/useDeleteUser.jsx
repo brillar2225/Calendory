@@ -13,11 +13,41 @@ import {
   twitterProvider,
 } from '../../api/firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
-import { Navigate } from 'react-router-dom';
+import { useAuthContext } from '../useAuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function useDeleteUser() {
+  const navigate = useNavigate();
+
+  const { user } = useAuthContext();
+  const [values, setValues] = useState(initialValues);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [caution, setCaution] = useState(false);
+
+  const handleCaution = () => {
+    const providerId = user.providerData[0].providerId;
+    if (providerId === 'password') {
+      if (values.password !== '' || values.confirmPassword !== '') {
+        return setCaution((prev) => !prev);
+      }
+    }
+    return setCaution((prev) => !prev);
+  };
+
+  const handleChange = (e) => {
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setCaution(false);
+    setValues(initialValues);
+    removeUser(values);
+  };
 
   // アカウント削除
   const removeUser = async (provider, values) => {
@@ -51,7 +81,7 @@ export default function useDeleteUser() {
       await deleteDoc(doc(db, 'users', auth.currentUser.uid));
       await deleteUser(auth.currentUser);
       setIsLoading(false);
-      return Navigate('/');
+      return navigate('/');
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
@@ -72,8 +102,18 @@ export default function useDeleteUser() {
   };
 
   return {
+    user,
+    values,
     isLoading,
     error,
-    removeUser,
+    caution,
+    handleCaution,
+    handleChange,
+    handleSubmit,
   };
 }
+
+const initialValues = {
+  password: '',
+  confirmPassword: '',
+};

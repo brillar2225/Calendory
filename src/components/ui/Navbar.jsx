@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
-import useUser from '../../hooks/User/useUser';
+import useSignInOut from '../../hooks/Auth/useSignInOut';
 import useToggle from '../../hooks/useToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
   const { user } = useAuthContext();
-  const { logout } = useUser();
+  const { logout } = useSignInOut();
   const { toggle, handleToggle } = useToggle();
 
   return (

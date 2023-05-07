@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useSignIn from '../../hooks/Auth/useSignIn';
+import useSignInOut from '../../hooks/Auth/useSignInOut';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
@@ -19,7 +19,7 @@ export default function Login() {
     googleLogin,
     twitterLogin,
     githubLogin,
-  } = useSignIn();
+  } = useSignInOut();
 
   return (
     <>
@@ -43,6 +43,12 @@ export default function Login() {
               onChange={handleChange}
             />
             <Button color={'blue'} type={'submit'} title={'Sign In'} />
+            <Link
+              to={'/reset-password'}
+              className='mt-3 underline lg:no-underline lg:hover:underline'
+            >
+              Forgot Password?
+            </Link>
           </AuthForm>
           <div className='inline-flex justify-center items-center w-full mt-3 mb-1'>
             <span className='h-px w-5/12 bg-black'></span>

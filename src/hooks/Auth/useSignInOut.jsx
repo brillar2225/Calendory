@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../useAuthContext';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
 import {
   auth,
   db,
@@ -11,7 +15,7 @@ import {
 } from '../../api/firebase';
 import { Timestamp, doc, getDoc, setDoc } from 'firebase/firestore';
 
-export default function useSignIn() {
+export default function useSignInOut() {
   const navigate = useNavigate();
 
   const { dispatch } = useAuthContext();
@@ -96,6 +100,11 @@ export default function useSignIn() {
         displayName: userCredential.user.displayName,
         email: userCredential.user.email,
         photoUrl: userCredential.user.photoURL,
+        providerId:
+          userCredential.providerId.charAt(0).toUpperCase() +
+          userCredential.providerId
+            .slice(1, userCredential.providerId.length)
+            .replace('.com', ''),
       });
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);
@@ -146,6 +155,11 @@ export default function useSignIn() {
         displayName: userCredential.user.displayName,
         email: userCredential.user.email,
         photoUrl: userCredential.user.photoURL,
+        providerId:
+          userCredential.providerId.charAt(0).toUpperCase() +
+          userCredential.providerId
+            .slice(1, userCredential.providerId.length)
+            .replace('.com', ''),
       });
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);
@@ -196,6 +210,11 @@ export default function useSignIn() {
         displayName: userCredential.user.displayName,
         email: userCredential.user.email,
         photoUrl: userCredential.user.photoURL,
+        providerId:
+          userCredential.providerId.charAt(0).toUpperCase() +
+          userCredential.providerId
+            .slice(1, userCredential.providerId.length)
+            .replace('.com', ''),
       });
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);
@@ -224,6 +243,13 @@ export default function useSignIn() {
     }
   };
 
+  // ログアウト
+  const logout = async () => {
+    await signOut(auth);
+    dispatch({ type: 'REMOVE_USER', payload: null });
+    return navigate('/');
+  };
+
   return {
     values,
     isLoading,
@@ -233,6 +259,7 @@ export default function useSignIn() {
     googleLogin,
     twitterLogin,
     githubLogin,
+    logout,
   };
 }
 

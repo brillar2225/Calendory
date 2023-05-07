@@ -6,7 +6,7 @@ export default function DeleteUserModal({ user, onClick, onSubmit }) {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className='flex flex-col justify-center items-center p-6 modal'>
+    <div className='flex flex-col justify-center items-center max-w-xs md:max-w-md p-6 modal'>
       <FontAwesomeIcon
         icon={faXmark}
         className='h-6 w-6 p-2 absolute top-px right-px'

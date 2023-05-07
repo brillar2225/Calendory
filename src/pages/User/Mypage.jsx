@@ -1,38 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import useUser from '../../hooks/User/useUser';
-import { useAuthContext } from '../../hooks/useAuthContext';
+import useUpdateUser from '../../hooks/User/useUpdateUser';
+import useToggle from '../../hooks/useToggle';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
 import Button from '../../components/ui/Button';
-import useToggle from '../../hooks/useToggle';
 
 export default function Mypage() {
-  const { user } = useAuthContext();
-  const initialValue = {
-    displayName: user.displayName,
-    email: user.email,
-    password: '',
-  };
-  const [values, setValues] = useState(initialValue);
+  const { user, values, isLoading, error, handleChange, handleSubmit } =
+    useUpdateUser();
   const { toggle, handleToggle } = useToggle();
-  const { isLoading, error, updateUser } = useUser();
 
   const provider = user.providerData[0].providerId;
-
-  const handleChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setValues({ ...values, password: initialValue.password });
-    updateUser(initialValue, values);
-  };
 
   return (
     <>
@@ -40,8 +20,8 @@ export default function Mypage() {
         <div>Loading...</div>
       ) : (
         <SectionForm
-          srTitle={`${user.displayName}の会員情報`}
-          title={`${user.displayName}の会員情報`}
+          srTitle={`${user.displayName}様の会員情報`}
+          title={`${user.displayName}様の会員情報`}
           error={error}
         >
           <AuthForm onSubmit={handleSubmit}>
@@ -53,7 +33,7 @@ export default function Mypage() {
             <div className='flex flex-col items-center w-full mt-5'>
               <input
                 type='text'
-                className={`${toggle && 'text-lg'} input`}
+                className={'input'}
                 name='displayName'
                 value={values.displayName}
                 onChange={handleChange}
@@ -62,7 +42,7 @@ export default function Mypage() {
               />
               <input
                 type='email'
-                className={`${toggle && 'text-lg'} input`}
+                className={'input'}
                 name='email'
                 value={values.email}
                 onChange={handleChange}

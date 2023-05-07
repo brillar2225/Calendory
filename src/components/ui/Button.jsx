@@ -4,7 +4,7 @@ export default function Button({ color, type, title, onClick, children }) {
   switch (color) {
     case 'blue':
       return (
-        <button type={type} className='btn btn-blue'>
+        <button type={type} onClick={onClick} className='btn btn-blue'>
           {title}
         </button>
       );

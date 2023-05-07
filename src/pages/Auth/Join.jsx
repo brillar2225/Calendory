@@ -44,7 +44,7 @@ export default function Join() {
               value={values.confirmPassword}
               onChange={handleChange}
             />
-            <Button color={'blue'} type={'submit'} title={'Sign In'} />
+            <Button color={'blue'} type={'submit'} title={'Sign Up'} />
           </AuthForm>
           <div className='flex flex-col items-center mt-4'>
             <h3 className='text-sm mb-3'>すでにアカウントをお持ちの方</h3>

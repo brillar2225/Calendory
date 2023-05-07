@@ -66,6 +66,7 @@ export default function useSignUp() {
         displayName: userCredential.user.displayName,
         email: userCredential.user.email,
         photoUrl: avatar,
+        providerId: 'password',
       });
       dispatch({ type: 'SET_USER', payload: userCredential.user });
       setIsLoading(false);

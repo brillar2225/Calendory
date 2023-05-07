@@ -1,41 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import DeleteUserModal from './DeleteUserModal';
-import { useAuthContext } from '../../hooks/useAuthContext';
-import SectionForm from '../../components/form/SectionForm';
 import useDeleteUser from '../../hooks/User/useDeleteUser';
+import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
+import DeleteUserModal from './DeleteUserModal';
 
 export default function DeleteUser() {
-  const { isLoading, error, removeUser } = useDeleteUser();
-  const { user } = useAuthContext();
+  const {
+    user,
+    values,
+    isLoading,
+    error,
+    caution,
+    handleCaution,
+    handleChange,
+    handleSubmit,
+  } = useDeleteUser();
   const providerId = user.providerData[0].providerId;
   const provider =
     providerId !== 'password'
       ? providerId.charAt(0).toUpperCase() +
         providerId.slice(1, providerId.length).replace('.com', '')
       : providerId;
-  const [values, setValues] = useState(initialValues);
-  const [caution, setCaution] = useState(false);
 
-  const handleCaution = () => {
-    if (values.password !== '' || values.confirmPassword !== '')
-      setCaution((prev) => !prev);
-  };
-
-  const handleChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setCaution(false);
-    setValues(initialValues);
-    removeUser(values);
-  };
   return (
     <>
       {isLoading ? (
@@ -91,7 +78,7 @@ export default function DeleteUser() {
                   to={`/${user.uid}/account`}
                   className='h-11 w-[45%] rounded-lg border border-button-blue text-button-blue flex items-center justify-center'
                 >
-                  Previous
+                  Cancel
                 </Link>
                 <button
                   type='button'
@@ -115,8 +102,3 @@ export default function DeleteUser() {
     </>
   );
 }
-
-const initialValues = {
-  password: '',
-  confirmPassword: '',
-};
