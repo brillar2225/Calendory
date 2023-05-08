@@ -8,31 +8,10 @@ import {
 } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../api/firebase';
-import { useAuthContext } from '../useAuthContext';
 
 export default function useUpdateUser() {
-  const { user } = useAuthContext();
-  const initialValues = {
-    displayName: user.displayName,
-    email: user.email,
-    password: '',
-  };
-  const [values, setValues] = useState(initialValues);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setValues({ ...values, password: initialValues.password });
-    updateUser(initialValues, values);
-  };
 
   // ユーザー情報をアップデート
   const updateUser = async (initialValues, values) => {
@@ -88,11 +67,8 @@ export default function useUpdateUser() {
   };
 
   return {
-    user,
-    values,
     isLoading,
     error,
-    handleChange,
-    handleSubmit,
+    updateUser,
   };
 }

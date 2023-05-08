@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useUpdateUser from '../../hooks/User/useUpdateUser';
 import useToggle from '../../hooks/useToggle';
@@ -6,13 +6,28 @@ import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
 import Button from '../../components/ui/Button';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 export default function Mypage() {
-  const { user, values, isLoading, error, handleChange, handleSubmit } =
-    useUpdateUser();
+  const { user } = useAuthContext();
+  const { isLoading, error, updateUser } = useUpdateUser();
   const { toggle, handleToggle } = useToggle();
 
   const provider = user.providerData[0].providerId;
+  const initialValues = {
+    displayName: user.displayName,
+    email: user.email,
+    password: '',
+  };
+  const [values, setValues] = useState(initialValues);
+  const handleChange = (e) =>
+    setValues({ ...values, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setValues({ ...values, password: initialValues.password });
+    updateUser(initialValues, values);
+  };
 
   return (
     <>

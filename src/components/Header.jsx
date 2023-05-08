@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from './ui/Navbar';
+import Navbar from './Navbar';
 import calendory from '../assets/logos/Calendory.png';
 
 export default function Header() {

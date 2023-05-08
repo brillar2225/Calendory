@@ -27,10 +27,11 @@ export default function useDeleteUser() {
 
   const handleCaution = () => {
     const providerId = user.providerData[0].providerId;
-    if (providerId === 'password') {
-      if (values.password !== '' || values.confirmPassword !== '') {
-        return setCaution((prev) => !prev);
-      }
+    if (
+      providerId === 'password' &&
+      (values.password !== '' || values.confirmPassword !== '')
+    ) {
+      return setCaution((prev) => !prev);
     }
     return setCaution((prev) => !prev);
   };

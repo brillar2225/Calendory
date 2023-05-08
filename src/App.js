@@ -12,6 +12,7 @@ import ChangePassword from './pages/User/ChangePassword';
 import DeleteUser from './pages/User/DeleteUser';
 import Calendory from './pages/Main/Calendory';
 import Calendar from './pages/Main/Calendar';
+import ProtectedRoute from './pages/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,11 @@ const router = createBrowserRouter([
       },
       {
         path: ':uid',
-        element: <Calendory />,
+        element: (
+          <ProtectedRoute>
+            <Calendory />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, path: ':uid/:yymmdd', element: <Calendar /> },
           // {path: ':uid/"yymmdd/todo', element: <TodoList/>},
@@ -51,7 +56,11 @@ const router = createBrowserRouter([
       },
       {
         path: ':uid/account',
-        element: <Account />,
+        element: (
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <Mypage /> },
           { path: 'password', element: <ChangePassword /> },

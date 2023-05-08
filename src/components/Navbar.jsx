@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../../hooks/useAuthContext';
-import useSignInOut from '../../hooks/Auth/useSignInOut';
-import useToggle from '../../hooks/useToggle';
+import { useAuthContext } from '../hooks/useAuthContext';
+import useSignInOut from '../hooks/Auth/useSignInOut';
+import useToggle from '../hooks/useToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
