@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Calendar() {
+export default function TodoList() {
   return (
     <article>
-      <h1>Calendar Page</h1>
+      <h1>ToDo List Page</h1>
     </article>
   );
 }

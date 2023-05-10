@@ -137,4 +137,32 @@
   .modal {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[500px] h-96 rounded-lg shadow-lg bg-white;
   }
+
+  .aside {
+    @apply flex;
+  }
+
+  .aside-row {
+    @apply justify-start w-full;
+  }
+
+  .aside-col {
+    @apply flex-col space-y-px w-52 border-r-2 border-slate-100;
+  }
+
+  .tab {
+    @apply h-13 px-2 py-3 border-slate-100 shadow-sm;
+  }
+
+  .tab-row {
+    @apply rounded-t-lg border-t-2 border-r-2;
+  }
+
+  .tab-col {
+    @apply rounded-r-lg border-b-2;
+  }
+
+  .focused {
+    @apply bg-primary-black text-white shadow-inner;
+  }
 }

@@ -92,7 +92,7 @@ export default function useSignInOut() {
       const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
       if (docSnap.exists()) {
         setIsLoading(false);
-        return navigate(`/${userCredential.user.uid}`);
+        return navigate('/');
       }
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         createdAt: Timestamp.fromDate(new Date()),
@@ -147,7 +147,7 @@ export default function useSignInOut() {
       const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
       if (docSnap.exists()) {
         setIsLoading(false);
-        return navigate(`/${userCredential.user.uid}`);
+        return navigate('/');
       }
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         createdAt: Timestamp.fromDate(new Date()),

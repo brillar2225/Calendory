@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Calendar() {
+export default function Diary() {
   return (
     <article>
-      <h1>Calendar Page</h1>
+      <h1>Diary Page</h1>
     </article>
   );
 }

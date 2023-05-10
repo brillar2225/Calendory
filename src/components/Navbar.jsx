@@ -3,90 +3,68 @@ import { Link } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import useSignInOut from '../hooks/Auth/useSignInOut';
 import useToggle from '../hooks/useToggle';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
   const { user } = useAuthContext();
   const { logout } = useSignInOut();
-  const { toggle, handleToggle } = useToggle();
+  const { menuToggle, hanldeMenuToggle } = useToggle();
 
   return (
-    <nav className='inline-flex items-center z-50'>
+    <nav className='relative flex items-center z-20'>
       {user ? (
-        <ul
-          className={`${
-            toggle ? 'hidden' : 'fixed right-1 top-14 bg-secondary-blue'
-          } lg:flex lg:static lg:flex-row lg:space-x-2 lg:bg-transparent rounded-lg`}
-        >
-          <li>
-            <Link
-              to={'/'}
-              className='flex justify-center items-center px-4 py-2 h-14 w-24  text-white lg:w-26 lg:text-primary-black lg:hover:rounded-lg lg:hover:border lg:hover:border-primary-black'
-              onClick={logout}
-            >
-              Sign Out
-            </Link>
-          </li>
-          <li className='hidden lg:flex lg:items-center lg:justify-center'>
-            <Link to={`${user.uid}/account`}>
-              <img
-                src={user.photoUrl ? user.photoUrl : user.photoURL}
-                alt={user.displayName}
-                className='rounded-full h-12 w-12'
-              />
-            </Link>
-          </li>
-        </ul>
+        <>
+          {menuToggle && (
+            <ul className='absolute top-16 right-4 flex flex-col space-y-1 rounded-lg bg-primary-black text-white font-medium lg:right-3'>
+              <li className='rounded-lg hover:bg-primary-orange hover:text-primary-black'>
+                <Link
+                  to={`${user.uid}/account`}
+                  onClick={hanldeMenuToggle}
+                  className='flex justify-center items-center px-2 py-3 w-24'
+                >
+                  Mypage
+                </Link>
+              </li>
+              <li className='rounded-lg hover:bg-primary-orange hover:text-primary-black'>
+                <Link
+                  to={'/'}
+                  onClick={() => {
+                    hanldeMenuToggle();
+                    logout();
+                  }}
+                  className='flex justify-center items-center px-2 py-3 w-24 '
+                >
+                  Sign Out
+                </Link>
+              </li>
+            </ul>
+          )}
+          <img
+            src={user.photoUrl ? user.photoUrl : user.photoURL}
+            alt={user.dispalyName}
+            className='rounded-full h-12 w-12 m-2 cursor-pointer'
+            onClick={hanldeMenuToggle}
+          />
+        </>
       ) : (
-        <ul
-          className={`${
-            toggle ? 'hidden' : 'fixed right-1 top-11 bg-secondary-blue'
-          } lg:flex lg:static lg:flex-row lg:space-x-2 lg:bg-transparent rounded-lg`}
-        >
-          <li>
+        <ul className='flex items-center font-semibold'>
+          <li className='w-20 lg:h-13 rounded-lg hover:border hover:border-primary-black'>
             <Link
-              to={'login'}
-              className='flex justify-center items-center px-4 py-2 h-14 w-24  text-white lg:w-26 lg:text-primary-black lg:hover:rounded-lg lg:hover:border lg:hover:border-primary-black'
-              onClick={handleToggle}
+              to={'/login'}
+              className='flex justify-center items-center px-2 py-3 w-full lg:h-full'
             >
               Sign In
             </Link>
           </li>
-          <li>
+          <li className='w-20 lg:h-13 rounded-lg hover:border hover:border-primary-black'>
             <Link
-              to={'join'}
-              className='flex justify-center items-center px-4 py-2 h-14 w-24 text-white lg:w-26 lg:text-primary-black lg:hover:rounded-lg lg:hover:border lg:hover:border-primary-black'
-              onClick={handleToggle}
+              to={'/join'}
+              className='flex justify-center items-center px-2 py-3 w-full lg:h-full'
             >
-              Sign Up
+              Sign up
             </Link>
           </li>
         </ul>
       )}
-      {user && (
-        <Link to={`/${user.uid}/account`} className='mr-2 lg:hidden'>
-          <img
-            src={user.photoUrl ? user.photoUrl : user.photoURL}
-            alt={user.displayName}
-            className='h-11 w-11 rounded-full '
-          />
-        </Link>
-      )}
-      <div className='cursor-pointer lg:hidden' onClick={handleToggle}>
-        {toggle ? (
-          <FontAwesomeIcon
-            icon={faBars}
-            className='h-6 w-6 p-2 text-primary-black'
-          />
-        ) : (
-          <FontAwesomeIcon
-            icon={faXmark}
-            bounce
-            className='h-6 w-6 p-2 text-primary-black'
-          />
-        )}
-      </div>
     </nav>
   );
 }
