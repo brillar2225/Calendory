@@ -1,0 +1,89 @@
+/* Customize FullCalendar CSS */
+
+/* Toolbar */
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0.5rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.25em;
+  color: #51454e;
+}
+
+.fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+  margin: 0;
+}
+
+.fc .fc-button-primary,
+.fc .fc-button-primary:disabled {
+  background-color: transparent;
+  border: none;
+  color: #51454e;
+  opacity: 1;
+}
+
+.fc .fc-button-primary:focus {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.fc .fc-button-primary:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  background-color: #e3e3e3;
+  border: none;
+  color: #51454e;
+}
+
+.fc .fc-button {
+  padding: 0.4em 0.15em;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.fc .fc-button:focus {
+  box-shadow: none;
+  outline: 0;
+}
+
+.fc .fc-button .fc-icon {
+  font-size: 1.25em;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background-color: transparent;
+  border: none;
+  color: #51454e;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion {
+  color: #ff5952;
+}
+
+.fc-day-sat .fc-col-header-cell-cushion {
+  color: #3e77e9;
+}
+
+@media screen and (min-width: 768px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.5em;
+  }
+
+  .fc .fc-button .fc-icon {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.75em;
+  }
+
+  .fc .fc-button .fc-icon {
+    font-size: 1.75em;
+  }
+}
