@@ -54,37 +54,65 @@ function AddEventModal({ dateStr }) {
                 <span className='block toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-12 rounded-full'></span>
               </label>
             </div>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              showTimeSelect
-              timeFormat='HH:mm'
-              timeIntervals={1}
-              timeCaption='time'
-              dateFormat='yyyy年MM月dd HH:mm'
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              showTimeSelect
-              timeFormat='HH:mm'
-              timeIntervals={1}
-              timeCaption='time'
-              dateFormat='yyyy年MM月dd HH:mm'
-            />
+            <div className='flex items-center w-full'>
+              <span className='w-1/5 font-medium'>開始日</span>
+              {toggle ? (
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  showTimeSelect
+                  timeFormat='HH:mm'
+                  timeIntervals={1}
+                  timeCaption='time'
+                  dateFormat='yyyy年MM月dd日 HH:mm'
+                />
+              ) : (
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat='yyyy年MM月dd日'
+                />
+              )}
+            </div>
+            <div className='flex items-center w-full'>
+              <span className='w-1/5 font-medium'>終了日</span>
+              {toggle ? (
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={endDate}
+                  endDate={endDate}
+                  showTimeSelect
+                  timeFormat='HH:mm'
+                  timeIntervals={1}
+                  timeCaption='time'
+                  dateFormat='yyyy年MM月dd日 HH:mm'
+                />
+              ) : (
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat='yyyy年MM月dd日'
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className='flex justify-between w-9/10 my-1 md:my-2'>
           <label htmlFor='priority' className='font-medium'>
             優先順位
           </label>
-          <select name='priority' id='priority'>
+          <select name='priority' id='priority' className='bg-transparent'>
             <option value='highest'>最高</option>
             <option value='high'>高</option>
             <option value='middle'>中</option>
