@@ -68,6 +68,24 @@
   color: #3e77e9;
 }
 
+/* Date Picker */
+.react-datepicker-wrapper {
+  margin: 0.25rem 0;
+}
+
+.react-datepicker__input-container {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.react-datepicker__input-container > input {
+  width: 90%;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 16px;
+  text-align: center;
+}
+
 @media screen and (min-width: 768px) {
   .fc .fc-toolbar-title {
     font-size: 1.5em;
