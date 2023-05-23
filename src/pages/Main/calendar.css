@@ -70,6 +70,7 @@
 
 /* Date Picker */
 .react-datepicker-wrapper {
+  width: 80%;
   margin: 0.25rem 0;
 }
 
