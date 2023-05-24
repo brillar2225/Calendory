@@ -38,7 +38,12 @@ export default function Calendory() {
                 idx === currentTab && 'focused'
               }`}
             >
-              <Link to={tab.url}>{tab.label}</Link>
+              <Link
+                to={tab.url}
+                className='inline-block px-3 py-4 w-full h-full'
+              >
+                {tab.label}
+              </Link>
             </button>
           );
         })}

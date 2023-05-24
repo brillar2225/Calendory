@@ -152,7 +152,7 @@
   }
 
   .tab {
-    @apply h-13 px-3 py-4 border-slate-100 shadow-sm;
+    @apply h-13 border-slate-100 shadow-sm;
   }
 
   .tab-row {

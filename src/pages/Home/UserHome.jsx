@@ -40,7 +40,12 @@ export default function UserHome({ user }) {
             )}
           </div>
           <button className='btn btn-blue'>
-            <Link to={`${user.uid}`}>マイカレンダー</Link>
+            <Link
+              to={`${user.uid}`}
+              className='flex justify-center items-center w-full h-full'
+            >
+              マイカレンダー
+            </Link>
           </button>
         </div>
       </div>

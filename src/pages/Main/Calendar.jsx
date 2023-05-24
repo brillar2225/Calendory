@@ -46,7 +46,7 @@ export default function Calendar() {
       });
     });
     return unsubscribe;
-  });
+  }, []);
 
   return (
     <article className='relative w-full h-full overflow-hidden'>
