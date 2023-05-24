@@ -30,6 +30,18 @@ export const theme = {
     fontSize: {
       '2xs': ['0.625rem', '0.875rem'],
     },
+    animation: {
+      popUp: 'popUp 5000ms cubic-bezier(0.830, 0.090, 0.180, 0.900)',
+    },
+    keyframes: {
+      popUp: {
+        '0% 100%': {
+          left: '50%',
+          transform: 'translate(-50%, -110%)',
+        },
+        '50%': { left: '50%', transform: 'translate(-50%, 15%)' },
+      },
+    },
   },
 };
 export const plugins = [];

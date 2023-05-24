@@ -1,21 +1,30 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../components/ui/Button';
-import { addDoc, collection } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../api/firebase';
 import DatePicker from 'react-datepicker';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export default function CalendarAddEventModal({ onToggle, targetDate }) {
+const STATUS_SUCCESS = 'SUCCESS';
+const STATUS_ERROR = 'ERROR';
+
+const ADD_SUCCESS = '✅ イベントを追加しました';
+const ADD_ERROR = '❌ イベントが追加できませんでした';
+
+export default function CalendarAddEventModal({
+  targetDate,
+  onToggle,
+  onPopUp,
+}) {
   const { uid } = useParams();
   const [values, setValues] = useState({
-    ownerId: uid,
     title: '',
     desc: '',
-    allday: false,
-    startDate: new Date(targetDate.toString()),
-    endDate: new Date(targetDate.toString()),
+    allDay: false,
+    start: new Date(targetDate.toString()),
+    end: new Date(targetDate.toString()),
     priority: '',
   });
 
@@ -24,12 +33,30 @@ export default function CalendarAddEventModal({ onToggle, targetDate }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (values.allday === true) {
-      values.startDate.setHours(0, 0);
-      values.endDate.setHours(0, 0);
+    try {
+      const { title, desc, allDay, start, end, priority } = values;
+      if (allDay === true) {
+        start.setHours(0, 0);
+        end.setHours(0, 0);
+      }
+      const subColRef = doc(collection(doc(db, 'calendory', uid), 'events'));
+      await setDoc(subColRef, {
+        createdAt: new Date(),
+        eventId: subColRef.id,
+        ownerId: uid,
+        title,
+        desc,
+        allDay,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        priority,
+      });
+      onPopUp(STATUS_SUCCESS, ADD_SUCCESS);
+      onToggle();
+    } catch (e) {
+      console.log(e.code, e.message);
+      onPopUp(STATUS_ERROR, ADD_ERROR);
     }
-    await addDoc(collection(db, 'events'), values);
-    onToggle();
   };
 
   return (
@@ -67,42 +94,42 @@ export default function CalendarAddEventModal({ onToggle, targetDate }) {
             <div className='relative flex justify-between items-center w-full text-base cursor-pointer'>
               <span className='font-medium text-gray-900'>終日</span>
               <label
-                htmlFor='allday'
+                htmlFor='allDay'
                 className='h-6 w-12 text-gray-900 font-medium'
               >
                 <input
                   type='checkbox'
-                  name='allday'
-                  id='allday'
+                  name='allDay'
+                  id='allDay'
                   className='sr-only'
                   onChange={() =>
-                    setValues({ ...values, allday: !values.allday })
+                    setValues({ ...values, allDay: !values.allDay })
                   }
-                  checked={values.allday}
+                  checked={values.allDay}
                 />
                 <span className='block toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-12 rounded-full'></span>
               </label>
             </div>
             <div className='flex items-center w-full mt-2 md:mt-3'>
               <span className='w-1/5 font-medium'>開始日</span>
-              {values.allday ? (
+              {values.allDay ? (
                 <DatePicker
-                  name='startDate'
-                  selected={values.startDate}
-                  onChange={(date) => setValues({ ...values, startDate: date })}
+                  name='start'
+                  selected={values.start}
+                  onChange={(date) => setValues({ ...values, start: date })}
                   selectsStart
-                  startDate={values.startDate}
-                  endDate={values.endDate}
+                  startDate={values.start}
+                  endDate={values.end}
                   dateFormat='yyyy年MM月dd日'
                 />
               ) : (
                 <DatePicker
-                  name='startDate'
-                  selected={values.startDate}
-                  onChange={(date) => setValues({ ...values, startDate: date })}
+                  name='start'
+                  selected={values.start}
+                  onChange={(date) => setValues({ ...values, start: date })}
                   selectsStart
-                  startDate={values.startDate}
-                  endDate={values.endDate}
+                  startDate={values.start}
+                  endDate={values.end}
                   showTimeSelect
                   timeFormat='HH:mm'
                   timeIntervals={5}
@@ -113,26 +140,26 @@ export default function CalendarAddEventModal({ onToggle, targetDate }) {
             </div>
             <div className='flex items-center w-full mt-2 md:mt-3'>
               <span className='w-1/5 font-medium'>終了日</span>
-              {values.allday ? (
+              {values.allDay ? (
                 <DatePicker
-                  name='endDate'
-                  selected={values.endDate}
-                  onChange={(date) => setValues({ ...values, endDate: date })}
+                  name='end'
+                  selected={values.end}
+                  onChange={(date) => setValues({ ...values, end: date })}
                   selectsEnd
-                  startDate={values.startDate}
-                  endDate={values.endDate}
-                  minDate={values.startDate}
+                  startDate={values.start}
+                  endDate={values.end}
+                  minDate={values.start}
                   dateFormat='yyyy年MM月dd日'
                 />
               ) : (
                 <DatePicker
-                  name='endDate'
-                  selected={values.endDate}
-                  onChange={(date) => setValues({ ...values, endDate: date })}
+                  name='end'
+                  selected={values.end}
+                  onChange={(date) => setValues({ ...values, end: date })}
                   selectsEnd
-                  startDate={values.startDate}
-                  endDate={values.endDate}
-                  minDate={values.startDate}
+                  startDate={values.start}
+                  endDate={values.end}
+                  minDate={values.start}
                   showTimeSelect
                   timeFormat='HH:mm'
                   timeIntervals={5}
