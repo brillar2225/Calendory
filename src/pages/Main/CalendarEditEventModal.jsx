@@ -1,29 +1,22 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { collection, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../api/firebase';
+import React, { useState } from 'react';
 import CalendarEventModal from './CalendarEventModal';
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../api/firebase';
+import { useParams } from 'react-router-dom';
 
 const STATUS_SUCCESS = 'SUCCESS';
 const STATUS_ERROR = 'ERROR';
 
-const ADD_SUCCESS = '✅ イベントを追加しました';
-const ADD_ERROR = '❌ イベントが追加できませんでした';
+const EDIT_SUCCESS = '✅ イベントを修正しました';
+const EDIT_ERROR = '❌ イベントが修正できませんでした';
 
-export default function CalendarAddEventModal({
-  targetDate,
+export default function CalendarEditEventModal({
+  targetObj,
   onToggle,
   onPopUp,
 }) {
   const { uid } = useParams();
-  const [values, setValues] = useState({
-    title: '',
-    desc: '',
-    allDay: false,
-    start: new Date(targetDate.toString()),
-    end: new Date(targetDate.toString()),
-    priority: '',
-  });
+  const [values, setValues] = useState(targetObj);
 
   const handleFilterTime = (time) => {
     const selectedDate = new Date(time);
@@ -37,14 +30,14 @@ export default function CalendarAddEventModal({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { title, desc, allDay, start, end, priority } = values;
+      const { id, title, desc, allDay, start, end, priority } = values;
       const initStart = allDay ? new Date(start.setHours(0, 0, 0, 0)) : start;
       const initEnd = allDay ? new Date(end.setHours(23, 59, 59, 999)) : end;
-      const subColRef = doc(collection(doc(db, 'calendory', uid), 'events'));
-      await setDoc(subColRef, {
-        createdAt: new Date(),
-        id: subColRef.id,
-        ownerId: uid,
+      const subColRef = doc(
+        collection(doc(db, 'calendory', uid), 'events'),
+        id
+      );
+      await updateDoc(subColRef, {
         title,
         desc,
         allDay,
@@ -52,11 +45,11 @@ export default function CalendarAddEventModal({
         end: initEnd.toISOString(),
         priority,
       });
-      onPopUp(STATUS_SUCCESS, ADD_SUCCESS);
+      onPopUp(STATUS_SUCCESS, EDIT_SUCCESS);
       onToggle();
     } catch (e) {
       console.log(e.code, e.message);
-      onPopUp(STATUS_ERROR, ADD_ERROR);
+      onPopUp(STATUS_ERROR, EDIT_ERROR);
     }
   };
 
@@ -68,7 +61,7 @@ export default function CalendarAddEventModal({
       handleChange={handleChange}
       handleSubmit={handleSubmit}
       onToggle={onToggle}
-      btnTitle={'Add Event'}
+      btnTitle={'Edit Event'}
     />
   );
 }

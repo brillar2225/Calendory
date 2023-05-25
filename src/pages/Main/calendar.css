@@ -68,6 +68,25 @@
   color: #3e77e9;
 }
 
+.fc .fc-daygrid-day-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fc .fc-daygrid-day-number:hover {
+  background-color: rgba(212, 212, 212, 0.5);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.fc-event .fc-event-main,
+.fc .fc-daygrid-event-harness {
+  cursor: pointer;
+}
+
 /* Date Picker */
 .react-datepicker-wrapper {
   width: 80%;
@@ -90,6 +109,12 @@
   .fc .fc-button .fc-icon {
     font-size: 1.5em;
   }
+
+  .fc .fc-daygrid-day-number {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -99,5 +124,9 @@
 
   .fc .fc-button .fc-icon {
     font-size: 1.75em;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 16px;
   }
 }

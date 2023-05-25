@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import CalendarAddEventModal from './CalendarAddEventModal';
 import PopUp from '../../components/ui/PopUp';
 import useToggle from '../../hooks/useToggle';
+import CalendarEditEventModal from './CalendarEditEventModal';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../api/firebase';
 import FullCalendar from '@fullcalendar/react';
@@ -15,13 +16,19 @@ export default function Calendar() {
   const { uid } = useParams();
   const [events, setEvents] = useState([]);
   const [targetDate, setTargetDate] = useState(new Date());
+  const [targetObj, setTargetObj] = useState({});
   const [popUp, setPopUp] = useState(false);
   const [popUpInfo, setPopUpInfo] = useState({
     status: '',
     message: '',
   });
 
-  const { toggle, handleToggle } = useToggle();
+  const {
+    addEventToggle,
+    editEventToggle,
+    handleAddEventToggle,
+    handleEditEventToggle,
+  } = useToggle();
 
   const handlePopUp = (status, message) => {
     setPopUp(true);
@@ -33,7 +40,17 @@ export default function Calendar() {
     const target = e.date;
 
     setTargetDate(target);
-    handleToggle();
+    handleAddEventToggle();
+  };
+
+  const handleEditEvent = (e) => {
+    const target = e.event;
+    const targetObj = events.find((event) => event.id === target.id);
+    targetObj.start = new Date(targetObj.start);
+    targetObj.end = new Date(targetObj.end);
+
+    setTargetObj(targetObj);
+    handleEditEventToggle();
   };
 
   useEffect(() => {
@@ -46,7 +63,7 @@ export default function Calendar() {
       });
     });
     return unsubscribe;
-  }, []);
+  }, [uid]);
 
   return (
     <article className='relative w-full h-full overflow-hidden'>
@@ -55,14 +72,19 @@ export default function Calendar() {
           targetDate.getMonth() + 1
         }月カレンダー`}
       </h1>
-      <PopUp />
       {popUp && <PopUp status={popUpInfo.status} message={popUpInfo.message} />}
-      <div className={`p-2 h-full ${!toggle && 'opacity-10'}`}>
+      <div
+        className={`p-2 h-full ${
+          (addEventToggle || editEventToggle) &&
+          'opacity-10 pointer-events-none'
+        }`}
+      >
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           selectable
           events={{ events }}
           dateClick={handleAddEvent}
+          eventClick={handleEditEvent}
           initialView='dayGridMonth'
           locale={'ja'}
           headerToolbar={{
@@ -82,10 +104,17 @@ export default function Calendar() {
           height={'100%'}
         />
       </div>
-      {!toggle && (
+      {addEventToggle && (
         <CalendarAddEventModal
           targetDate={targetDate}
-          onToggle={handleToggle}
+          onToggle={handleAddEventToggle}
+          onPopUp={handlePopUp}
+        />
+      )}
+      {editEventToggle && (
+        <CalendarEditEventModal
+          targetObj={targetObj}
+          onToggle={handleEditEventToggle}
           onPopUp={handlePopUp}
         />
       )}
