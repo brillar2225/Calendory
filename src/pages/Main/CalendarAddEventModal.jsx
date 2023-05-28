@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { collection, doc, setDoc } from 'firebase/firestore';
+import CalendarEventModal from '../../components/form/CalendarEventModal';
 import { db } from '../../api/firebase';
-import CalendarEventModal from './CalendarEventModal';
 
 const STATUS_SUCCESS = 'SUCCESS';
 const STATUS_ERROR = 'ERROR';
@@ -11,11 +10,11 @@ const ADD_SUCCESS = '✅ イベントを追加しました';
 const ADD_ERROR = '❌ イベントが追加できませんでした';
 
 export default function CalendarAddEventModal({
+  user,
   targetDate,
   onToggle,
   onPopUp,
 }) {
-  const { uid } = useParams();
   const [values, setValues] = useState({
     title: '',
     desc: '',
@@ -40,11 +39,13 @@ export default function CalendarAddEventModal({
       const { title, desc, allDay, start, end, priority } = values;
       const initStart = allDay ? new Date(start.setHours(0, 0, 0, 0)) : start;
       const initEnd = allDay ? new Date(end.setHours(23, 59, 59, 999)) : end;
-      const subColRef = doc(collection(doc(db, 'calendory', uid), 'events'));
+      const subColRef = doc(
+        collection(doc(db, 'calendory', user.uid), 'events')
+      );
       await setDoc(subColRef, {
         createdAt: new Date(),
         id: subColRef.id,
-        ownerId: uid,
+        ownerId: user.uid,
         title,
         desc,
         allDay,

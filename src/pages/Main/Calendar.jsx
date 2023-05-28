@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import CalendarAddEventModal from './CalendarAddEventModal';
-import PopUp from '../../components/ui/PopUp';
-import useToggle from '../../hooks/useToggle';
 import CalendarEditEventModal from './CalendarEditEventModal';
+import PopUp from '../../components/ui/PopUp';
+import { useAuthContext } from '../../hooks/useAuthContext';
+import useToggle from '../../hooks/useToggle';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../api/firebase';
 import FullCalendar from '@fullcalendar/react';
@@ -13,7 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './calendar.css';
 
 export default function Calendar() {
-  const { uid } = useParams();
+  const { user } = useAuthContext();
   const [events, setEvents] = useState([]);
   const [targetDate, setTargetDate] = useState(new Date());
   const [targetObj, setTargetObj] = useState({});
@@ -37,9 +37,9 @@ export default function Calendar() {
   };
 
   const handleAddEvent = (e) => {
-    const target = e.date;
+    const targetDate = e.date;
 
-    setTargetDate(target);
+    setTargetDate(targetDate);
     handleAddEventToggle();
   };
 
@@ -54,7 +54,7 @@ export default function Calendar() {
   };
 
   useEffect(() => {
-    const subColRef = collection(doc(db, 'calendory', uid), 'events');
+    const subColRef = collection(doc(db, 'calendory', user.uid), 'events');
     const unsubscribe = onSnapshot(subColRef, (snapshot) => {
       const newEvents = [];
       snapshot.forEach((doc) => {
@@ -63,7 +63,7 @@ export default function Calendar() {
       });
     });
     return unsubscribe;
-  }, [uid]);
+  }, [user]);
 
   return (
     <article className='relative w-full h-full overflow-hidden'>
@@ -106,6 +106,7 @@ export default function Calendar() {
       </div>
       {addEventToggle && (
         <CalendarAddEventModal
+          user={user}
           targetDate={targetDate}
           onToggle={handleAddEventToggle}
           onPopUp={handlePopUp}
@@ -113,7 +114,9 @@ export default function Calendar() {
       )}
       {editEventToggle && (
         <CalendarEditEventModal
+          user={user}
           targetObj={targetObj}
+          toggle={editEventToggle}
           onToggle={handleEditEventToggle}
           onPopUp={handlePopUp}
         />
