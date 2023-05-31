@@ -32,7 +32,7 @@ export default function Calendar() {
 
   const handlePopUp = (status, message) => {
     setPopUp(true);
-    setTimeout(() => setPopUp(false), 5000);
+    setTimeout(() => setPopUp(false), 4000);
     setPopUpInfo({ ...popUpInfo, status, message });
   };
 
@@ -56,14 +56,11 @@ export default function Calendar() {
   useEffect(() => {
     const subColRef = collection(doc(db, 'calendory', user.uid), 'events');
     const unsubscribe = onSnapshot(subColRef, (snapshot) => {
-      const newEvents = [];
-      snapshot.forEach((doc) => {
-        newEvents.push(doc.data());
-        setEvents(() => [...newEvents]);
-      });
+      const events = snapshot.docs.map((doc) => doc.data());
+      setEvents(events);
     });
     return unsubscribe;
-  }, [user]);
+  }, [user.uid]);
 
   return (
     <article className='relative w-full h-full overflow-hidden'>

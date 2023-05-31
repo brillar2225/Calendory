@@ -31,7 +31,7 @@ export const theme = {
       '2xs': ['0.625rem', '0.875rem'],
     },
     animation: {
-      popUp: 'popUp 5000ms cubic-bezier(0.830, 0.090, 0.180, 0.900)',
+      popUp: 'popUp 4000ms cubic-bezier(0.830, 0.090, 0.180, 0.900)',
     },
     keyframes: {
       popUp: {

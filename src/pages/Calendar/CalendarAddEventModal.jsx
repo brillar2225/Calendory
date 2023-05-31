@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { collection, doc, setDoc } from 'firebase/firestore';
 import CalendarEventModal from '../../components/form/CalendarEventModal';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../api/firebase';
 
 const STATUS_SUCCESS = 'SUCCESS';
@@ -19,8 +19,8 @@ export default function CalendarAddEventModal({
     title: '',
     desc: '',
     allDay: false,
-    start: new Date(targetDate.toString()),
-    end: new Date(targetDate.toString()),
+    start: targetDate,
+    end: targetDate,
     priority: '',
   });
 

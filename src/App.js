@@ -12,9 +12,9 @@ import ChangePassword from './pages/User/ChangePassword';
 import DeleteUser from './pages/User/DeleteUser';
 import Calendory from './pages/Main/Calendory';
 import DefaultPage from './pages/Main/DefaultPage';
-import Calendar from './pages/Main/Calendar';
-import TodoList from './pages/Main/TodoList';
-import Diary from './pages/Main/Diary';
+import Calendar from './pages/Calendar/Calendar';
+import TodoList from './pages/TodoList/TodoList';
+import Diary from './pages/Diary/Diary';
 import ProtectedRoute from './pages/ProtectedRoute';
 
 const router = createBrowserRouter([

@@ -144,7 +144,7 @@
   }
 
   .aside-row {
-    @apply justify-start w-full;
+    @apply justify-start border-b-2 w-full;
   }
 
   .aside-col {
