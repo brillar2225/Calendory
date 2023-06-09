@@ -137,12 +137,12 @@ export default function CalendarEventModal({
             value={values.priority}
             onChange={handleChange}
           >
-            <option value='select'>選択</option>
-            <option value='highest'>最高</option>
-            <option value='high'>高</option>
-            <option value='middle'>中</option>
-            <option value='low'>低</option>
-            <option value='lowest'>最低</option>
+            <option value='-'>--</option>
+            <option value='1'>最高</option>
+            <option value='2'>高</option>
+            <option value='3'>中</option>
+            <option value='4'>低</option>
+            <option value='5'>最低</option>
           </select>
         </div>
         <div className='flex flex-col items-center w-9/10 mt-3'>
