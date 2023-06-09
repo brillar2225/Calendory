@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SubTaskItem({ list, idx }) {
   return (
-    <li key={idx} className='inline-flex justify-start items-center mt-1'>
+    <li className='inline-flex justify-start items-center mt-1'>
       {idx + 1} {list}
       {/* 今後、checkbox機能も実装予定
       <input

@@ -25,7 +25,7 @@ export default function Calendory() {
   const handleCurrentTab = (id) => setCurrentTab(id);
 
   return (
-    <section className='flex flex-col w-full h-9/10 mt-2 lg:flex-row'>
+    <section className='flex flex-col flex-1 overflow-auto w-full h-9/10 mt-2 lg:flex-row'>
       <h1 className='sr-only'>Calendory</h1>
       <aside className='aside max-lg:aside-row lg:aside-col'>
         {tabs.map((tab, idx) => {

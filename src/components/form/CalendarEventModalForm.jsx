@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import DeleteEventModal from './DeleteEventModal';
 import Button from '../ui/Button';
 
-export default function CalendarEventModal({
+export default function CalendarEventModalFormForm({
   values,
   setValues,
   handleFilterTime,

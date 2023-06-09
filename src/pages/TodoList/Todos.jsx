@@ -8,20 +8,19 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../../api/firebase';
+import TodoHeader from './TodoHeader';
 import EventList from './EventList';
 import TodoList from './TodoList';
+import TodoListForm from '../../components/form/TodoListForm';
 import Button from '../../components/ui/Button';
-import DatePicker from 'react-datepicker';
 import { useAuthContext } from '../../hooks/useAuthContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import './todos.css';
 
 export default function Todos() {
   const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isOpenTodos, setIsOpenTodos] = useState(false);
+  const [isOpenAddTodos, setIsOpenAddTodos] = useState(false);
   const [values, setValues] = useState(initialValues);
   const [events, setEvents] = useState([]);
   const [todos, setTodos] = useState([]);
@@ -35,7 +34,7 @@ export default function Todos() {
       (prev) => new Date(prev.setDate(selectedDate.getDate() + 1))
     );
 
-  const handleClick = () => setIsOpenTodos((prev) => !prev);
+  const handleClick = () => setIsOpenAddTodos((prev) => !prev);
 
   const handleChange = (e) =>
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -43,26 +42,28 @@ export default function Todos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const subColRef = doc(collection(doc(db, 'calendory', user.uid), 'todos'));
-    await setDoc(subColRef, {
-      createdAt: new Date(),
-      date: selectedDate,
-      id: subColRef.id,
-      ownerId: user.uid,
-      title: values.title,
-      desc: values.desc,
-      tags:
-        values.tags !== ''
-          ? values.tags.split(',').map((tag) => tag.trim())
-          : [],
-      priority: values.priority,
-      subTask:
-        values.subTask !== ''
-          ? values.subTask.split(',').map((tag) => tag.trim())
-          : [],
-    });
-    setValues(initialValues);
-    setIsOpenTodos(false);
+    try {
+      const { title, desc, tags, priority, subTask } = values;
+      const subColRef = doc(
+        collection(doc(db, 'calendory', user.uid), 'todos')
+      );
+      await setDoc(subColRef, {
+        createdAt: new Date(),
+        date: selectedDate,
+        id: subColRef.id,
+        ownerId: user.uid,
+        title: title,
+        desc: desc,
+        tags: tags !== '' ? tags.split(',').map((tag) => tag.trim()) : [],
+        priority: priority,
+        subTask:
+          subTask !== '' ? subTask.split(',').map((tag) => tag.trim()) : [],
+      });
+      setValues(initialValues);
+      setIsOpenAddTodos(false);
+    } catch (e) {
+      console.log(e.code, e.message);
+    }
   };
 
   useEffect(() => {
@@ -106,39 +107,21 @@ export default function Todos() {
       </h1>
       <div
         className={`max-h-full h-full ${
-          isOpenTodos && 'opacity-10 pointer-events-none'
+          isOpenAddTodos && 'opacity-10 pointer-events-none'
         }`}
       >
         <div className='w-full border-b-2'>
-          <div className='flex justify-center items-center m-auto max-w-sm w-full h-13 sm:max-w-md md:max-w-lg'>
-            <button
-              className='w-10 h-10 mx-3 rounded-full bg-slate-100 shadow-md'
-              onClick={onPrev}
-            >
-              <FontAwesomeIcon
-                icon={faAngleLeft}
-                className='w-5 h-5 p-1 text-primary-black align-middle rounded-full'
-              />
-            </button>
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-            />
-            <button
-              className='w-10 h-10 mx-3 rounded-full bg-slate-100 shadow-md'
-              onClick={onNext}
-            >
-              <FontAwesomeIcon
-                icon={faAngleRight}
-                className='w-5 h-5 p-1 text-primary-black align-middle rounded-full'
-              />
-            </button>
-          </div>
+          <TodoHeader
+            onPrev={onPrev}
+            onNext={onNext}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
         </div>
-        <div className='relative p-2 w-full h-[95%] bg-slate-100'>
+        <div className='relative p-2 w-full h-[95%] bg-slate-100 overflow-y-auto'>
           <EventList events={events} />
           <TodoList todos={todos} />
-          <div className='absolute bottom-5 flex justify-center w-full'>
+          <div className='absolute bottom-5 right-0 flex justify-center w-full'>
             <Button
               color={'blue'}
               type={'button'}
@@ -148,74 +131,14 @@ export default function Todos() {
           </div>
         </div>
       </div>
-      {isOpenTodos && (
-        <form
-          className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center px-5 py-8 max-w-xs w-full border border-slate-100 bg-slate-50 rounded-xl drop-shadow-2xl z-40 sm:max-w-md md:max-w-lg'
-          onSubmit={handleSubmit}
-        >
-          <input
-            type='text'
-            name='title'
-            placeholder='タイトル'
-            className='px-3 py-2 mb-3 w-full h-12 text-sm shadow-lg rounded-lg focus:outline-none'
-            value={values.title}
-            onChange={handleChange}
-            required
-          />
-          <textarea
-            name='desc'
-            placeholder='メモ'
-            className='px-3 py-2 mb-3 w-full max-h-32 h-32 text-sm shadow-lg rounded-lg focus:outline-none'
-            value={values.desc}
-            onChange={handleChange}
-          />
-          <input
-            type='text'
-            name='tags'
-            placeholder='タグ(コンマ(,)をつける)'
-            className='px-3 py-2 mb-3 w-full h-12 text-sm shadow-lg rounded-lg focus:outline-none'
-            value={values.tags}
-            onChange={handleChange}
-          />
-          <select
-            name='priority'
-            id='priority'
-            className='px-3 py-2 mb-3 w-full h-12 text-sm shadow-lg rounded-lg focus:outline-none'
-            value={values.priority}
-            onChange={handleChange}
-          >
-            <option value='select'>優先順位</option>
-            <option value='highest'>最高</option>
-            <option value='high'>高</option>
-            <option value='middle'>中</option>
-            <option value='low'>低</option>
-            <option value='lowest'>最低</option>
-          </select>
-          <input
-            type='text'
-            name='subTask'
-            placeholder='サブタスク(コンマ(,)をつける)'
-            className='px-3 py-2 mb-3 w-full h-12 text-sm shadow-lg rounded-lg focus:outline-none'
-            value={values.subTask}
-            onChange={handleChange}
-          />
-          <div className='flex flex-col items-center w-full mt-2'>
-            <div className='inline-flex justify-between space-x-2 w-full'>
-              <Button
-                color={'sub-blue'}
-                type={'button'}
-                title={'Cancel'}
-                onClick={handleClick}
-              />
-              <Button
-                color={'blue'}
-                type={'submit'}
-                title={'Add'}
-                onClick={handleSubmit}
-              />
-            </div>
-          </div>
-        </form>
+      {isOpenAddTodos && (
+        <TodoListForm
+          btnName={'Add'}
+          values={values}
+          handleClick={handleClick}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
       )}
     </article>
   );

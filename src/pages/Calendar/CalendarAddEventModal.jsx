@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import CalendarEventModal from '../../components/form/CalendarEventModal';
+import CalendarEventModalForm from '../../components/form/CalendarEventModalForm';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../api/firebase';
 
@@ -62,7 +62,7 @@ export default function CalendarAddEventModal({
   };
 
   return (
-    <CalendarEventModal
+    <CalendarEventModalForm
       values={values}
       setValues={setValues}
       handleFilterTime={handleFilterTime}
