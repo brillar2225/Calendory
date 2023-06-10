@@ -42,11 +42,11 @@ export default function CalendarEditEventModal({
       if (!user.uid === ownerId) return onPopUp(STATUS_ERROR, AUTH_ERROR);
       const initStart = allDay ? new Date(start.setHours(0, 0, 0, 0)) : start;
       const initEnd = allDay ? new Date(end.setHours(23, 59, 59, 999)) : end;
-      const subColRef = doc(
+      const subDocRef = doc(
         collection(doc(db, 'calendory', user.uid), 'events'),
         id
       );
-      await updateDoc(subColRef, {
+      await updateDoc(subDocRef, {
         title,
         desc,
         allDay,

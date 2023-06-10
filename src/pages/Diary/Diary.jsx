@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import TodoDiaryHeader from '../../components/form/TodoDiaryHeader';
-import Button from '../../components/ui/Button';
 import {
   collection,
   doc,
@@ -12,6 +10,9 @@ import {
 import { db } from '../../api/firebase';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import DiaryForm from '../../components/form/DiaryForm';
+import DiaryList from './DiaryList';
+import TodoDiaryHeader from '../../components/form/TodoDiaryHeader';
+import Button from '../../components/ui/Button';
 
 export default function Diary() {
   const { user } = useAuthContext();
@@ -37,8 +38,7 @@ export default function Diary() {
     e.preventDefault();
 
     try {
-      const { title, context } = values;
-      console.log(title, context);
+      const { title, content } = values;
       const subColRef = doc(
         collection(doc(db, 'calendory', user.uid), 'diaries')
       );
@@ -49,7 +49,7 @@ export default function Diary() {
         id: subColRef.id,
         ownerId: user.uid,
         title,
-        context,
+        content,
       });
       setValues(initialValues);
       setIsOpenAddDairy(false);
@@ -74,7 +74,7 @@ export default function Diary() {
     });
     return unsubscribe;
   }, [selectedDate, user.uid]);
-  console.log(diaries);
+
   return (
     <article className='relative w-full h-full'>
       <h1 className='sr-only'>
@@ -96,18 +96,14 @@ export default function Diary() {
           />
         </div>
         <div className='relative p-2 w-full h-[95%] bg-slate-100 overflow-y-auto'>
-          <div>
-            {diaries.map((diary) => (
-              <div key={diary.id}>{diary.title}</div>
-            ))}
-            <div className='absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center max-w-2xl w-full'>
-              <Button
-                color={'blue'}
-                type={'button'}
-                title={'Add Diary'}
-                onClick={handleClick}
-              />
-            </div>
+          <DiaryList diaries={diaries} />
+          <div className='absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center max-w-4xl w-full md:bottom-6 lg:bottom-7'>
+            <Button
+              color={'blue'}
+              type={'button'}
+              title={'Add Diary'}
+              onClick={handleClick}
+            />
           </div>
         </div>
       </div>
@@ -126,5 +122,5 @@ export default function Diary() {
 
 const initialValues = {
   title: '',
-  context: '',
+  content: '',
 };

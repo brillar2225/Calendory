@@ -21,7 +21,7 @@ export default function TodoItem({ todo }) {
   const [isOpenSubTask, setIsOpenSubTask] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
-  const handleClickEditModal = () => setIsOpenEditModal((prev) => !prev);
+  const handleClick = () => setIsOpenEditModal((prev) => !prev);
   const handleChange = (e) =>
     setValues({ ...values, [e.target.name]: e.target.value });
   const handleSubmit = async (e) => {
@@ -29,11 +29,11 @@ export default function TodoItem({ todo }) {
 
     try {
       const { title, desc, tags, priority, subTask } = values;
-      const subColRef = doc(
+      const subDocRef = doc(
         collection(doc(db, 'calendory', user.uid), 'todos'),
         todo.id
       );
-      await updateDoc(subColRef, {
+      await updateDoc(subDocRef, {
         title,
         desc,
         tags: tags !== '' ? tags.split(',').map((tag) => tag.trim()) : [],
@@ -63,7 +63,7 @@ export default function TodoItem({ todo }) {
         className='relative inline-flex flex-col px-3 py-2 w-full border-b border-gray-200'
       >
         <h2 className='w-fit text-lg font-bold'>{todo.title}</h2>
-        <h3 className='w-fit text-sm'>{todo.desc}</h3>
+        <h3 className='w-fit text-sm whitespace-pre-wrap'>{todo.desc}</h3>
         <ul className='inline-flex flex-wrap space-x-2 my-2 text-sm'>
           {todo.tags.map((tag, index) => (
             <li
@@ -92,13 +92,13 @@ export default function TodoItem({ todo }) {
           )}
         </ul>
         <div className='absolute top-3 right-4'>
-          <button className='text-lg' onClick={handleClickEditModal}>
+          <button className='p-1 text-lg' onClick={handleClick}>
             <FontAwesomeIcon
               icon={faPenToSquare}
               className='text-gray-400 hover:text-black'
             />
           </button>
-          <button className='ml-3 text-lg' onClick={handleDelete}>
+          <button className='p-1 ml-2 text-lg' onClick={handleDelete}>
             <FontAwesomeIcon
               icon={faTrashCan}
               className='text-gray-400 hover:text-black'
@@ -110,7 +110,7 @@ export default function TodoItem({ todo }) {
         <TodoListForm
           btnName={'Edit'}
           values={values}
-          handleClick={handleClickEditModal}
+          handleClick={handleClick}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
         />

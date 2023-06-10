@@ -119,9 +119,11 @@ export default function Todos() {
           />
         </div>
         <div className='relative p-2 w-full h-[95%] bg-slate-100 overflow-y-auto'>
-          <EventList events={events} />
-          <TodoList todos={todos} />
-          <div className='absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center max-w-2xl w-full'>
+          <div className='max-h-[87%] overflow-y-auto'>
+            <EventList events={events} />
+            <TodoList todos={todos} />
+          </div>
+          <div className='absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center max-w-2xl w-full md:bottom-6 lg:bottom-7'>
             <Button
               color={'blue'}
               type={'button'}

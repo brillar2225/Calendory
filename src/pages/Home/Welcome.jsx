@@ -19,17 +19,23 @@ export default function Welcome() {
               </span>
             </h1>
             <h2 className='flex flex-col mt-3 md:mt-5 lg:mt-7 text-2xl sm:text-3xl lg:text-4xl'>
-              あなたの日程やテスク
+              あなたの日程やタスク
             </h2>
           </div>
           <div className='flex flex-col justify-center items-center max-w-xs w-full m-auto z-20 lg:flex-row sm:max-w-sm lg:max-w-md lg:space-x-2'>
             <button className='btn btn-blue'>
-              <Link to={'/login'} className='lg:text-lg'>
+              <Link
+                to={'/login'}
+                className='flex justify-center items-center w-full h-full px-5 py-2 lg:text-lg'
+              >
                 ログインから始める
               </Link>
             </button>
             <button className='btn btn-sub-blue'>
-              <Link to={'/join'} className='lg:text-lg'>
+              <Link
+                to={'/join'}
+                className='flex justify-center items-center w-full h-full px-5 py-2 lg:text-lg'
+              >
                 会員登録から始める
               </Link>
             </button>

@@ -23,10 +23,10 @@ export default function DiaryForm({
         required
       />
       <textarea
-        name='context'
+        name='content'
         placeholder='あなたの今日を自由に記録してみて下さい！'
         className='px-3 py-2 mb-3 w-full max-h-96 h-32 text-sm shadow-lg rounded-lg focus:outline-none'
-        value={values.context}
+        value={values.content}
         onChange={handleChange}
       />
       <div className='flex flex-col items-center w-full mt-2'>
