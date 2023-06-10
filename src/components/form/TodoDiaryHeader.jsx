@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function TodoHeader({
+export default function TodoDiaryHeader({
   onPrev,
   onNext,
   selectedDate,

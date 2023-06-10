@@ -8,7 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../../api/firebase';
-import TodoHeader from './TodoHeader';
+import TodoDiaryHeader from '../../components/form/TodoDiaryHeader';
 import EventList from './EventList';
 import TodoList from './TodoList';
 import TodoListForm from '../../components/form/TodoListForm';
@@ -52,10 +52,10 @@ export default function Todos() {
         date: selectedDate,
         id: subColRef.id,
         ownerId: user.uid,
-        title: title,
-        desc: desc,
+        title,
+        desc,
         tags: tags !== '' ? tags.split(',').map((tag) => tag.trim()) : [],
-        priority: priority,
+        priority,
         subTask:
           subTask !== '' ? subTask.split(',').map((tag) => tag.trim()) : [],
       });
@@ -111,7 +111,7 @@ export default function Todos() {
         }`}
       >
         <div className='w-full border-b-2'>
-          <TodoHeader
+          <TodoDiaryHeader
             onPrev={onPrev}
             onNext={onNext}
             selectedDate={selectedDate}
@@ -121,7 +121,7 @@ export default function Todos() {
         <div className='relative p-2 w-full h-[95%] bg-slate-100 overflow-y-auto'>
           <EventList events={events} />
           <TodoList todos={todos} />
-          <div className='absolute bottom-5 right-0 flex justify-center w-full'>
+          <div className='absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center max-w-2xl w-full'>
             <Button
               color={'blue'}
               type={'button'}
