@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className='flex justify-center items-center border-t border-zinc-300 shadow-inner'>
+    <footer className='flex justify-center items-center border-t border-zinc-300 bg-stone-200 shadow-inner'>
       <div className='max-w-xs w-full sm:max-w-sm'>
         <h4 className='my-1 text-center'>
           Copyright &copy; {new Date().getFullYear()}{' '}

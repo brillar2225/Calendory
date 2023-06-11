@@ -101,7 +101,7 @@ export default function TodoItem({ todo }) {
           <button className='p-1 ml-2 text-lg' onClick={handleDelete}>
             <FontAwesomeIcon
               icon={faTrashCan}
-              className='text-gray-400 hover:text-black'
+              className='text-gray-400 hover:text-button-red'
             />
           </button>
         </div>
