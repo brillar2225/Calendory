@@ -5,6 +5,7 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
+import Loading from '../../components/ui/Loading';
 
 export default function ChangePassword() {
   const { user } = useAuthContext();
@@ -14,7 +15,7 @@ export default function ChangePassword() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm
           srTitle={'パスワードを変更する'}

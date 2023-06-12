@@ -1,6 +1,7 @@
 import { createContext, useEffect, useReducer, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../api/firebase';
+import Loading from '../components/ui/Loading';
 
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
@@ -39,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>
       {children}

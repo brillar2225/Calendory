@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useDeleteUser from '../../hooks/User/useDeleteUser';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
+import Loading from '../../components/ui/Loading';
 import DeleteUserModal from './DeleteUserModal';
 
 export default function DeleteUser() {
@@ -26,7 +27,7 @@ export default function DeleteUser() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm
           srTitle={'アカウントを削除する'}

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../../hooks/useAuthContext';
 import useUpdateUser from '../../hooks/User/useUpdateUser';
 import useToggle from '../../hooks/useToggle';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
 import Button from '../../components/ui/Button';
-import { useAuthContext } from '../../hooks/useAuthContext';
+import Loading from '../../components/ui/Loading';
 
 export default function Mypage() {
   const { user } = useAuthContext();
@@ -32,7 +33,7 @@ export default function Mypage() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm
           srTitle={`${user.displayName}様の会員情報`}

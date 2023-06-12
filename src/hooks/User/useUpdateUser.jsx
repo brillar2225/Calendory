@@ -42,6 +42,9 @@ export default function useUpdateUser() {
     } catch (e) {
       console.log(e.code, e.message);
       switch (e.code) {
+        case 'auth/email-already-in-use':
+          setError('既にご利用中のメールアドレスです。');
+          break;
         case 'auth/network-request-failed':
           setError('通信状況をご確認の上、再度お試し下さい。');
           break;

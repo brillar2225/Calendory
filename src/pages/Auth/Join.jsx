@@ -5,6 +5,7 @@ import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
 import Button from '../../components/ui/Button';
+import Loading from '../../components/ui/Loading';
 
 export default function Join() {
   const { isLoading, error, values, handleChange, handleSubmit } = useSignUp();
@@ -12,7 +13,7 @@ export default function Join() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm srTitle={'会員登録画面'} title={'会員登録'} error={error}>
           <AuthForm onSubmit={handleSubmit}>

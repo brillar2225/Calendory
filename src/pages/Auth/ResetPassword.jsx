@@ -5,6 +5,7 @@ import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
 import Button from '../../components/ui/Button';
+import Loading from '../../components/ui/Loading';
 
 function FirstStep({ displayName, onChange, onNext }) {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ export default function ResetPassword() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm
           srTitle={'パスワード再設定'}

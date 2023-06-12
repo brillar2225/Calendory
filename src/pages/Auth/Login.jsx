@@ -4,6 +4,7 @@ import useSignInOut from '../../hooks/Auth/useSignInOut';
 import SectionForm from '../../components/form/SectionForm';
 import AuthForm from '../../components/form/AuthForm';
 import InputForm from '../../components/form/InputForm';
+import Loading from '../../components/ui/Loading';
 import Button from '../../components/ui/Button';
 import google from '../../assets/icons/google.png';
 import twitter from '../../assets/icons/twitter.png';
@@ -24,7 +25,7 @@ export default function Login() {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <SectionForm srTitle={'ログイン画面'} title={'ログイン'} error={error}>
           <AuthForm onSubmit={handleSubmit}>
